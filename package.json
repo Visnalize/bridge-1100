@@ -1,0 +1,42 @@
+{
+  "name": "bridge-1100",
+  "description": "Bridge between Brick 1100 and external games/apps",
+  "author": "Visnalize",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsc --project tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    }
+  },
+  "dependencies": {
+    "postcss": "^8.4.29",
+    "rollup": "^3.29.1",
+    "esbuild": "^0.18.20",
+    "picocolors": "^1.0.0",
+    "source-map-js": "^1.0.2",
+    "nanoid": "^3.3.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visnalize/bridge-1100.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/visnalize/bridge-1100/issues"
+  },
+  "homepage": "https://github.com/visnalize/bridge-1100#readme"
+}
