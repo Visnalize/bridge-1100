@@ -11,7 +11,7 @@ Simply add the below line in your HTML file's `<body>` tag.
 ```html
 <body>
   ...
-  <script src="https://unpkg.com/bridge-1100"></script>
+  <script src="https://unpkg.com/bridge-1100/dist/index.umd.js" crossorigin></script>
 </body>
 ```
 
