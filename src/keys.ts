@@ -18,4 +18,6 @@ const keys = {
   Hash: "#",
 };
 
+export type Key = typeof keys;
+
 export default keys;

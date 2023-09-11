@@ -15,7 +15,7 @@ Simply add the below line in your HTML file's `<body>` tag.
 </body>
 ```
 
-A `bridge` object will then be available in the global scope.
+A `window.bridge` object will then be available to use.
 
 ### npm
 
@@ -36,7 +36,7 @@ bridge.on('keyclick', (key) => {
   console.log(key)
 });
 
-bridge.off();
+bridge.off('keyclick');
 
 bridge.send(iframe.contentWindow, {
   type: 'keyclick',

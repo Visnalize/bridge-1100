@@ -1,32 +1,36 @@
-import keys from "./keys";
+import { Key } from "./keys";
 
-export type Key = typeof keys;
-
-export type EventType = keyof CallbackMap;
+export type BridgeEvent = keyof BridgeEventMap;
 
 type KeyCallback = (key: Key) => void;
 
-interface CallbackMap {
+interface BridgeEventMap {
   keyclick: KeyCallback;
   numclick: KeyCallback;
 }
 
 interface BridgeMessage {
-  type: EventType;
+  type: BridgeEvent;
   data: any;
 }
 
-function messageReceiver(eventType?: EventType, callback?: CallbackMap[EventType]) {
-  return (event: MessageEvent) => {
-    if (!/^https?:\/\/(localhost|brick1100)/.test(event.origin)) {
+const callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
+
+function messageReceiver(eventName: BridgeEvent) {
+  return (messageEvent: MessageEvent) => {
+    if (!/^https?:\/\/(localhost|brick1100)/.test(messageEvent.origin)) {
       return;
     }
 
-    if (!eventType) {
+    if (!eventName) {
       throw new Error("Missing eventType");
     }
 
-    callback && callback((event.data as BridgeMessage).data);
+    const message = messageEvent.data as BridgeMessage;
+    if (message.type == eventName && callbackMap[eventName]) {
+      const callback = callbackMap[eventName] as KeyCallback;
+      callback(message.data);
+    }
   };
 }
 
@@ -34,15 +38,17 @@ const bridge = {
   /**
    * Subscribe to a message event.
    */
-  on: function <E extends EventType>(event: E, callback: CallbackMap[E]) {
-    window.addEventListener("message", messageReceiver(event, callback));
+  on: function <E extends BridgeEvent>(event: E, callback: BridgeEventMap[E]) {
+    callbackMap[event] = callback;
+    window.addEventListener("message", messageReceiver(event));
   },
 
   /**
    * Unsubscribe from a message event.
    */
-  off: function () {
-    window.removeEventListener("message", messageReceiver());
+  off: function (event: BridgeEvent) {
+    delete callbackMap[event];
+    window.removeEventListener("message", messageReceiver(event));
   },
 
   /**

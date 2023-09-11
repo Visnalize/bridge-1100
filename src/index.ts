@@ -1,4 +1,5 @@
-import bridge, { EventType, Key } from "./bridge";
+import bridge, { BridgeEvent } from "./bridge";
+import { Key } from "./keys";
 
 export default bridge;
-export type { EventType, Key };
+export type { BridgeEvent, Key };
