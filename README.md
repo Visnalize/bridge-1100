@@ -1,5 +1,7 @@
 # Bridge 1100
 
+[![npm](https://img.shields.io/npm/v/bridge-1100)](http://npm.im/bridge-1100)
+
 A simplified and type-safe interface to easily bridge between Brick 100 and external games/apps.
 
 ## Installation
@@ -11,7 +13,7 @@ Simply add the below line in your HTML file's `<body>` tag.
 ```html
 <body>
   ...
-  <script src="https://unpkg.com/bridge-1100/dist/index.umd.js" crossorigin></script>
+  <script src="https://unpkg.com/bridge-1100/dist/index.umd.js"></script>
 </body>
 ```
 
@@ -43,3 +45,7 @@ bridge.send(iframe.contentWindow, {
   key: 5,
 });
 ```
+
+## API
+
+🚧 Under construction 🚧
