@@ -34,14 +34,14 @@ yarn add bridge-1100
 ```js
 import bridge from 'bridge-1100';
 
-bridge.on('keyclick', (key) => {
+bridge.on('keypress', (key) => {
   console.log(key)
 });
 
-bridge.off('keyclick');
+bridge.off('keypress');
 
 bridge.send(iframe.contentWindow, {
-  type: 'keyclick',
+  type: 'keypress',
   key: 5,
 });
 ```

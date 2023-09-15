@@ -1,17 +1,23 @@
 import { Key } from "./keys";
+import viewport from "./viewport";
 
 export type BridgeEvent = keyof BridgeEventMap;
 
 type KeyCallback = (key: Key) => void;
 
-type GenericCallback = (...args: any[]) => void;
+type ShakeCallback = () => void;
+
+type GameloopCallback = (...args: any[]) => void;
 
 interface BridgeEventMap {
-  keyclick: KeyCallback;
-  numclick: KeyCallback;
-  start: GenericCallback;
-  pause: GenericCallback;
-  stop: GenericCallback;
+  keypress: KeyCallback;
+  numpress: KeyCallback;
+  keyrelease: KeyCallback;
+  numrelease: KeyCallback;
+  shake: ShakeCallback;
+  start: GameloopCallback;
+  pause: GameloopCallback;
+  stop: GameloopCallback;
 }
 
 interface BridgeEventData {
@@ -40,6 +46,11 @@ function messageReceiver(event: BridgeEvent) {
 }
 
 const bridge = {
+  /**
+   * Get the current viewport properties.
+   */
+  viewport,
+
   /**
    * Subscribe to a message event.
    *
