@@ -3,9 +3,11 @@ import viewport from "./viewport";
 
 export type BridgeEvent = keyof BridgeEventMap;
 
+export type ShakeIntensity = "LIGHT" | "MEDIUM" | "HEAVY";
+
 type KeyCallback = (key: Key) => void;
 
-type ShakeCallback = () => void;
+type ShakeCallback = (intensity: ShakeIntensity) => void;
 
 type GameloopCallback = (...args: any[]) => void;
 
