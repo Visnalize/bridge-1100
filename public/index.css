@@ -1,0 +1,19 @@
+html,
+body {
+  font-size: 15vh;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  width: calc(100vh * 1.374);
+  height: 100vh;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+footer {
+  margin-top: 3vh;
+  text-align: center;
+}
