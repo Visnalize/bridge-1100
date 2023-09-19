@@ -2,7 +2,7 @@
   "name": "bridge-1100",
   "description": "Bridge between Brick 1100 and external games/apps",
   "author": "Visnalize",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",

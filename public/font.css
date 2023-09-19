@@ -1,10 +1,21 @@
 @font-face {
-  font-family: Retro;
-  src: url("./font.ttf") format("truetype");
+  font-family: BrickPrimary;
   font-weight: normal;
   font-style: normal;
+  src: url("./primary.otf");
+}
+
+@font-face {
+  font-family: BrickSecondary;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./secondary.otf");
 }
 
 body {
-  font-family: "Retro", sans-serif;
+  font-family: "BrickPrimary", sans-serif;
+}
+
+footer {
+  font-family: "BrickSecondary", sans-serif;
 }
