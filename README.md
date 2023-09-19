@@ -10,9 +10,9 @@ A simplified and type-safe interface to easily bridge between Brick 100 and exte
 
 The interface allows you to [send](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) and [receive](https://developer.mozilla.org/en-US/docs/Web/API/EventSource/message_event) messages in form of events between the Brick 1100 and your app.
 
-From Brick 1100's perspective, the interface allows it to operational events to your app such as key presses, start trigger, etc. and listen to any event emitted from your app.
+From Brick 1100's perspective, the interface allows it to emit operational events to your app such as key presses, start trigger, etc. and listen to any event emitted from your app.
 
-From your app's perspective, the interface allows you to listen to the operational events from Brick 1100 to control your game/app and send back events to notify Brick 1100 of any changes in your game/app.
+From your app's perspective, the interface allows you to listen to the operational events from Brick 1100 to control your game/app and send back events to notify Brick 1100 of any changes in your game/app state.
 
 ## Installation
 
