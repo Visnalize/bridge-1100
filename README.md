@@ -50,9 +50,9 @@ bridge.on('keypress', (key) => {
 
 bridge.off('keypress');
 
-bridge.send(iframe.contentWindow, {
-  type: 'keypress',
-  key: 5,
+bridge.send(window.parent, {
+  event: 'stop',
+  data: { /* data sent back to Brick 1100 */ },
 });
 ```
 
@@ -70,7 +70,118 @@ The interface also packs a default stylesheet that can be used to style your app
 
 ## API
 
-🚧 Under construction 🚧
+### `on(...)`
+
+```ts
+bridge.on(event: BridgeEvent, callback: KeyCallback | ShakeCallback | GameloopCallback) => void;
+```
+
+Subscribe to a message event.
+
+__`event`__
+
+- Type: [BridgeEvent](#bridgeevent)
+- Description: The event to subscribe to.
+
+__`callback`__
+
+- Type: [KeyCallback](#keycallback) | [ShakeCallback](#shakecallback) | [GameloopCallback](#gameloopcallback)
+- Description: The callback handler when the event is received.
+
+### `off(...)`
+
+```ts
+bridge.off(event: BridgeEvent) => void;
+```
+
+Unsubscribe from a message event.
+
+__`event`__
+
+- Type: [BridgeEvent](#bridgeevent)
+- Description: The event to unsubscribe from.
+
+### `send(...)`
+
+```ts
+bridge.send(target: Window, eventData: BridgeEventData) => void;
+```
+
+Send an event to the target window.
+
+__`target`__
+
+- Type: [Window](https://developer.mozilla.org/en-US/docs/Web/API/Window)
+- Description: The target window to send the event to. In most cases, this will be `window.parent`.
+
+__`eventData`__
+
+- Type: [BridgeEventData](#bridgeeventdata)
+- Description: The event data to send.
+
+## Types
+
+### `BridgeEvent`
+
+Available events: `"keypress" | "keyrelease" | "numpress" | "numrelease" | "shake" | "start" | 'pause' | "stop"`
+
+### `KeyCallback`
+
+```ts
+(key: Key) => void;
+```
+
+The callback handler when a key event is received. Available for `keypress`, `keyrelease`, `numpress`, and `numrelease` events. See [Key](#key) for available keys.
+
+### `ShakeCallback`
+
+```ts
+(intensity: ShakeIntensity) => void
+```
+
+The callback handler when a shake event is received. Available for the `shake` event. See [ShakeIntensity](#shakeintensity) for available intensity options.
+
+### `GameloopCallback`
+
+```ts
+(...args: any[]) => void
+```
+
+The callback handler when a gameloop event is received. Available for the `start`, `pause`, and `stop` events.
+
+### `BridgeEventData`
+
+```ts
+{ event: BridgeEvent; data: any; }
+```
+
+### `ShakeIntensity`
+
+Available options: `"LIGHT" | "MEDIUM" | "HEAVY"`
+
+## Enums
+
+### `Key`
+
+Member | Value |
+--- | --- |
+`Power` | `"power"`
+`Ok` | `"ok"`
+`Clear` | `"clear"`
+`Up` | `"up"`
+`Down` | `"down"`
+`Zero` | `0`
+`One` | `1`
+`Two` | `2`
+`Three` | `3`
+`Four` | `4`
+`Five` | `5`
+`Six` | `6`
+`Seven` | `7`
+`Eight` | `8`
+`Nine` | `9`
+`Aste` | `"*"`
+`Hash` | `"#"`
 
 ## See also
 

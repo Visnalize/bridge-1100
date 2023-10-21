@@ -1,3 +1,9 @@
+html {
+  --c-trans: #8c9c7b;
+  --c-black: #000;
+  --c-black-alpha: rgba(0, 0, 0, 0.7);
+}
+
 html,
 body {
   font-size: 15vh;
