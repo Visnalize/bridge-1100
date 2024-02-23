@@ -1,6 +1,8 @@
 # Bridge 1100
 
-[![npm](https://img.shields.io/npm/v/bridge-1100)](http://npm.im/bridge-1100)
+[![NPM Version](https://img.shields.io/npm/v/bridge-1100?logo=npm)](http://npm.im/bridge-1100)
+[![NPM Downloads](https://img.shields.io/npm/dm/bridge-1100?logo=npm)](http://npm.im/bridge-1100)
+[![Discord](https://img.shields.io/discord/1153955094337957908?logo=discord)](https://discord.com/invite/6AQDnZa4Xm)
 
 A simplified and type-safe interface to easily bridge between Brick 100 and external games/apps.
 
