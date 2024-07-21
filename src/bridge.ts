@@ -31,7 +31,7 @@ const callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {
 
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<BridgeEventData>) => {
-    if (!/^https?:\/\/(localhost|brick1100)/.test(messageEvent.origin)) {
+    if (!/^(https?|capacitor):\/\/(localhost|brick1100)/.test(messageEvent.origin)) {
       return;
     }
 
