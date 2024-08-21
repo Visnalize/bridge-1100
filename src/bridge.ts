@@ -16,6 +16,8 @@ interface BridgeEventMap {
   numpress: KeyCallback;
   keyrelease: KeyCallback;
   numrelease: KeyCallback;
+  keyhold: KeyCallback;
+  numhold: KeyCallback;
   shake: ShakeCallback;
   start: GameloopCallback;
   pause: GameloopCallback;
