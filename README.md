@@ -125,7 +125,7 @@ __`eventData`__
 
 ### `BridgeEvent`
 
-Available events: `"keypress" | "keyrelease" | "numpress" | "numrelease" | "shake" | "start" | 'pause' | "stop"`
+Available events: `"keypress" | "keyrelease" | "keyhold" | "numpress" | "numrelease" | "numhold" | "shake" | "start" | "pause" | "stop"`
 
 ### `KeyCallback`
 
@@ -133,7 +133,7 @@ Available events: `"keypress" | "keyrelease" | "numpress" | "numrelease" | "shak
 (key: Key) => void;
 ```
 
-The callback handler when a key event is received. Available for `keypress`, `keyrelease`, `numpress`, and `numrelease` events. See [Key](#key) for available keys.
+The callback handler when a key event is received. Available for `keypress`, `keyrelease`, `keyhold`, `numpress`, `numrelease`, and `numhold` events. See [Key](#key) for available keys.
 
 ### `ShakeCallback`
 
