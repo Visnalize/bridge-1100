@@ -4,7 +4,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/bridge-1100?logo=npm)](http://npm.im/bridge-1100)
 [![Discord](https://img.shields.io/discord/1153955094337957908?logo=discord)](https://discord.com/invite/6AQDnZa4Xm)
 
-A simplified and type-safe interface to easily bridge between Brick 100 and external games/apps.
+A simplified and type-safe interface to easily bridge between [Brick 100](https://brick1100.app) and external games/apps.
 
 ## How it works
 
@@ -58,6 +58,8 @@ bridge.send(window.parent, {
 });
 ```
 
+See more examples in the [Examples](#examples) section below.
+
 ## Styling
 
 The interface also packs a default stylesheet that can be used to style your app. Simply add the below line in your HTML file's `<head>` tag.
@@ -106,7 +108,7 @@ __`event`__
 ### `send(...)`
 
 ```ts
-bridge.send(target: Window, eventData: BridgeEventData) => void;
+bridge.send(target: Window, eventData: { event: BridgeEvent, data: any }) => void;
 ```
 
 Send an event to the target window.
@@ -118,8 +120,8 @@ __`target`__
 
 __`eventData`__
 
-- Type: [BridgeEventData](#bridgeeventdata)
-- Description: The event data to send.
+- Type: `{ event: BridgeEvent, data: any }`
+- Description: The event data to send. The data type depends on the event, see [Examples](#examples) for more details.
 
 ## Types
 
@@ -151,12 +153,6 @@ The callback handler when a shake event is received. Available for the `shake` e
 
 The callback handler when a gameloop event is received. Available for the `start`, `pause`, and `stop` events.
 
-### `BridgeEventData`
-
-```ts
-{ event: BridgeEvent; data: any; }
-```
-
 ### `ShakeIntensity`
 
 Available options: `"LIGHT" | "MEDIUM" | "HEAVY"`
@@ -167,24 +163,76 @@ Available options: `"LIGHT" | "MEDIUM" | "HEAVY"`
 
 Member | Value |
 --- | --- |
-`Power` | `"power"`
-`Ok` | `"ok"`
-`Clear` | `"clear"`
-`Up` | `"up"`
-`Down` | `"down"`
-`Zero` | `0`
-`One` | `1`
-`Two` | `2`
-`Three` | `3`
-`Four` | `4`
-`Five` | `5`
-`Six` | `6`
-`Seven` | `7`
-`Eight` | `8`
-`Nine` | `9`
-`Aste` | `"*"`
-`Hash` | `"#"`
+`Power` | `"power"` |
+`Ok` | `"ok"` |
+`Clear` | `"clear"` |
+`Up` | `"up"` |
+`Down` | `"down"` |
+`Zero` | `0` |
+`One` | `1` |
+`Two` | `2` |
+`Three` | `3` |
+`Four` | `4` |
+`Five` | `5` |
+`Six` | `6` |
+`Seven` | `7` |
+`Eight` | `8` |
+`Nine` | `9` |
+`Aste` | `"*"` |
+`Hash` | `"#"` |
+
+## Examples
+
+In most cases, you will be using the [`on`](#on) method to subscribe and the [`send`](#send) method to send certain events to interact with [Brick 1100](https://brick1100.app). Following are some examples of how you can use the API.
+
+```js
+bridge.on("keypress", (key) => {
+  if (key === bridge.Key.Clear) {
+    // Handle "clear" key press event
+  }
+  if (key === bridge.Key.Up || key === bridge.Key.Down) {
+    // Handle "up" or "down" key press event
+  }
+  if (key === bridge.Key.Ok) {
+    // Handle "ok" key press event
+  }
+});
+
+bridge.on("numpress", (key) => {
+  if (key === 2) {
+    // Handle "2" key press event
+  }
+  if (key === 4) {
+    // Handle "4" key press event
+  }
+  if (key === 6) {
+    // Handle "6" key press event
+  }
+  if (key === 8) {
+    // Handle "8" key press event
+  }
+});
+
+bridge.on("start", (gameConfig) => {
+  // Handle game start event with game configuration
+});
+
+bridge.send(window.parent, { event: "stop", data: gameResults });
+
+bridge.send(window.parent, { event: "shake", data: "LIGHT" });
+
+bridge.send(window.parent, {
+  event: "loadAudio",
+  data: [
+    "https://example.com/hit.mp3",
+    "https://example.com/bounce.mp3"
+  ],
+});
+
+bridge.send(window.parent, { event: "playAudio", data: "bounce" })
+```
 
 ## See also
 
+- [Complete guide on how to build games/apps for Brick 1100](https://visnalize.com/brick1100/builders.html)
 - [Brick 1100 apps](https://github.com/Visnalize/brick-1100-apps)
