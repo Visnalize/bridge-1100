@@ -13,7 +13,7 @@
     "dev": "vite",
     "build": "vite build && tsc --project tsconfig.build.json",
     "test": "vitest",
-    "prepublish": "pnpm test & pnpm build"
+    "prepublishOnly": "vitest run & pnpm build"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
