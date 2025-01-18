@@ -52,7 +52,7 @@ bridge.on('keypress', (key) => {
 
 bridge.off('keypress');
 
-bridge.send('stop', { score: 1000, level: 1 });
+bridge.send(window.parent, { event: 'stop', data: { score: 1000, level: 1 } });
 ```
 
 See more examples in the [Examples](#examples) section below.
