@@ -1,4 +1,4 @@
-const keys = {
+var keys = {
   Power: "power",
   Ok: "ok",
   Clear: "clear",

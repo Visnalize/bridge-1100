@@ -2,7 +2,7 @@
   "name": "bridge-1100",
   "description": "Bridge between Brick 1100 and external games/apps",
   "author": "Visnalize",
-  "version": "0.1.14",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -14,8 +14,9 @@
     "build": "vite build && tsc --project tsconfig.build.json"
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
   },
   "eslintConfig": {
     "env": {

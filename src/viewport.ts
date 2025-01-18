@@ -1,11 +1,11 @@
-export const VIEWPORT_RATIO = 1.374;
+export var VIEWPORT_RATIO = 1.374;
 
 function getViewport() {
   if (!window) throw new Error("window is not defined");
 
-  const ratio = VIEWPORT_RATIO;
-  const height = window.innerHeight;
-  const width = height * ratio;
+  var ratio = VIEWPORT_RATIO;
+  var height = window.innerHeight;
+  var width = height * ratio;
   return {
     /** The width / height ratio for manual calculations. */
     ratio,
@@ -16,4 +16,6 @@ function getViewport() {
   };
 }
 
-export default getViewport();
+var viewport = getViewport();
+
+export default viewport;

@@ -34,20 +34,20 @@ interface BridgeEventMap {
   playAudio: PlayAudioCallback;
 }
 
-const callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
+var callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
 
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<{ event: BridgeEvent; data: any }>) => {
-    if (!/^(https?|capacitor):\/\/(localhost|brick1100)/.test(messageEvent.origin)) {
-      return;
+    if (!/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life)/.test(messageEvent.origin)) {
+      throw new Error("Unauthorized origin: " + messageEvent.origin);
     }
 
     if (!event) {
       throw new Error("Missing eventType");
     }
 
-    const message = messageEvent.data;
-    const callback = callbackMap[event];
+    var message = messageEvent.data;
+    var callback = callbackMap[event];
     if (message.event == event && callback) {
       callback!(message.data);
     }
@@ -55,33 +55,16 @@ function messageReceiver(event: BridgeEvent) {
 }
 
 interface Bridge {
-  /**
-   * Get the current viewport properties.
-   */
   viewport: typeof viewport;
-  /**
-   * Subscribe to a message event.
-   *
-   * @param event The event to subscribe to.
-   * @param callback The callback handler when the event is received.
-   */
+
   on(event: KeyEvent, callback: KeyCallback): void;
   on(event: GameLoopEvent, callback: GameloopCallback): void;
   on(event: "shake", callback: ShakeCallback): void;
   on(event: "loadAudio", callback: LoadAudioCallback): void;
-  on(event: "playAudio", callback: PlayAudioCallback): void
-  /**
-   * Unsubscribe from a message event.
-   *
-   * @param event The event to unsubscribe from.
-   */
+  on(event: "playAudio", callback: PlayAudioCallback): void;
+
   off(event: BridgeEvent): void;
-  /**
-   * Send an event to the target window.
-   *
-   * @param target The target window to send the event to.
-   * @param eventData The event data to send.
-   */
+
   send(target: Window, eventData: { event: KeyEvent; data: string | number }): void;
   send(target: Window, eventData: { event: GameLoopEvent; data: any }): void;
   send(target: Window, eventData: { event: "shake"; data: ShakeIntensity }): void;
@@ -89,20 +72,20 @@ interface Bridge {
   send(target: Window, eventData: { event: "playAudio"; data: string }): void;
 }
 
-const bridge: Bridge = {
+var bridge: Bridge = {
   viewport,
 
-  on(event, callback) {
+  on: function (event, callback) {
     callbackMap[event] = callback;
     window.addEventListener("message", messageReceiver(event));
   },
 
-  off(event) {
+  off: function (event) {
     delete callbackMap[event];
     window.removeEventListener("message", messageReceiver(event));
   },
 
-  send(target, eventData) {
+  send: function (target, eventData) {
     target.postMessage(eventData, "*");
   },
 };

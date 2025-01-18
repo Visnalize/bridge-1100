@@ -1,7 +1,8 @@
 html {
-  --c-trans: #8c9c7b;
-  --c-black: #000;
+  --c-green: #8c9c7b;
+  --c-black: #000000;
   --c-black-alpha: rgba(0, 0, 0, 0.7);
+  --c-trans: var(--c-green);
 }
 
 html,
@@ -20,6 +21,8 @@ canvas {
 }
 
 footer {
+  line-height: 1;
+  font-size: 12.5vh;
   margin-top: 3vh;
   text-align: center;
 }

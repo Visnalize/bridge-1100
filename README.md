@@ -6,7 +6,7 @@
 
 A simplified and type-safe interface to easily bridge between [Brick 100](https://brick1100.app) and external games/apps.
 
-## How it works
+## 🔁 How it works
 
 ![How it works](./docs/bridge-1100%20visual.svg)
 
@@ -16,7 +16,7 @@ From Brick 1100's perspective, the interface allows it to emit operational event
 
 From your app's perspective, the interface allows you to listen to the operational events from Brick 1100 to control your game/app and send back events to notify Brick 1100 of any changes in your game/app state.
 
-## Installation
+## 📦 Installation
 
 ### CDN
 
@@ -41,7 +41,7 @@ npm install bridge-1100
 yarn add bridge-1100
 ```
 
-## Usage
+## ✅ Usage
 
 ```js
 import bridge from 'bridge-1100';
@@ -52,15 +52,12 @@ bridge.on('keypress', (key) => {
 
 bridge.off('keypress');
 
-bridge.send(window.parent, {
-  event: 'stop',
-  data: { /* data sent back to Brick 1100 */ },
-});
+bridge.send('stop', { score: 1000, level: 1 });
 ```
 
 See more examples in the [Examples](#examples) section below.
 
-## Styling
+## 💅 Styling
 
 The interface also packs a default stylesheet that can be used to style your app. Simply add the below line in your HTML file's `<head>` tag.
 
@@ -68,11 +65,11 @@ The interface also packs a default stylesheet that can be used to style your app
 <head>
   ...
   <link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/index.css" />
-  <link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/font.css" /> <!-- If you wish to use the same font as Brick 1100 -->
+  <link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/font.css" />
 </head>
 ```
 
-## API
+## 🔌 API
 
 ### `on(...)`
 
@@ -234,5 +231,6 @@ bridge.send(window.parent, { event: "playAudio", data: "bounce" })
 
 ## See also
 
-- [Complete guide on how to build games/apps for Brick 1100](https://visnalize.com/brick1100/builders.html)
-- [Brick 1100 apps](https://github.com/Visnalize/brick-1100-apps)
+- [Complete guide on how to build games/apps for Brick 1100](https://visnalize.com/brick1100/builders)
+- [Brick 1100 Apps](https://github.com/Visnalize/brick-1100-apps)
+- [Brick 1100 Games](https://github.com/Visnalize/brick-1100-games)
