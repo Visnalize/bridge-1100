@@ -38,7 +38,7 @@ var callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
 
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<{ event: BridgeEvent; data: any }>) => {
-    if (!/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life)/.test(messageEvent.origin)) {
+    if (!/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life|netlify)/.test(messageEvent.origin)) {
       throw new Error("Unauthorized origin: " + messageEvent.origin);
     }
 
