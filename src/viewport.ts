@@ -1,3 +1,5 @@
+// DEPRECATED: this file will be removed in the future.
+
 export var VIEWPORT_RATIO = 1.374;
 
 function getViewport() {

@@ -5,6 +5,10 @@ export type BridgeEvent = keyof BridgeEventMap;
 
 export type ShakeIntensity = "LIGHT" | "MEDIUM" | "HEAVY";
 
+type InitCallback = (data: { "vw-ratio": number; color: any }) => void;
+
+type ScreenStateCallback = (data: { state: "active" | "inactive"; isNight: boolean }) => void;
+
 type KeyCallback = (key: Key) => void;
 
 type ShakeCallback = (intensity: ShakeIntensity) => void;
@@ -20,6 +24,8 @@ type KeyEvent = "keypress" | "keyrelease" | "keyhold" | "numpress" | "numrelease
 type GameLoopEvent = "start" | "pause" | "stop";
 
 interface BridgeEventMap {
+  _init: InitCallback;
+  _screenstate: ScreenStateCallback;
   keypress: KeyCallback;
   numpress: KeyCallback;
   keyhold: KeyCallback;
@@ -38,7 +44,9 @@ var callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
 
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<{ event: BridgeEvent; data: any }>) => {
-    if (!/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life|netlify)/.test(messageEvent.origin)) {
+    if (
+      !/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life|netlify)/.test(messageEvent.origin)
+    ) {
       throw new Error("Unauthorized origin: " + messageEvent.origin);
     }
 
@@ -55,8 +63,10 @@ function messageReceiver(event: BridgeEvent) {
 }
 
 interface Bridge {
-  viewport: typeof viewport;
+  viewport: typeof viewport; // DEPRECATED: to be removed in the next patch
 
+  on(event: "_init", callback: InitCallback): void;
+  on(event: "_screenstate", callback: ScreenStateCallback): void;
   on(event: KeyEvent, callback: KeyCallback): void;
   on(event: GameLoopEvent, callback: GameloopCallback): void;
   on(event: "shake", callback: ShakeCallback): void;
@@ -89,5 +99,38 @@ var bridge: Bridge = {
     target.postMessage(eventData, "*");
   },
 };
+
+(function init() {
+  if (!window || typeof window === "undefined") {
+    throw new Error("window is not defined");
+  }
+
+  bridge.on("_init", function (data) {
+    const color = data.color;
+    const style = document.createElement("style");
+    style.textContent = `
+      :root {
+        --vw-ratio: ${data["vw-ratio"]};
+        --foreground: ${color.root.fg};
+        --background: ${color.root.bg};
+      }
+      .inactive {
+        --foreground: ${color.inactive.fg};
+      }
+      .night {
+        --foreground: ${color.night.fg};
+      }
+      .night.inactive {
+        --foreground: ${color.night.inactive.fg};
+      }`;
+    document.head.appendChild(style);
+  });
+
+  bridge.on("_screenstate", function (data) {
+    const { state, isNight } = data;
+    document.body.classList.toggle("inactive", state === "inactive");
+    document.body.classList.toggle("night", isNight);
+  });
+})();
 
 export default bridge;
