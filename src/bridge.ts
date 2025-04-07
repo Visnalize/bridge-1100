@@ -106,8 +106,8 @@ var bridge: Bridge = {
   }
 
   bridge.on("_init", function (data) {
-    const color = data.color;
-    const style = document.createElement("style");
+    var color = data.color;
+    var style = document.createElement("style");
     style.textContent = `
       :root {
         --vw-ratio: ${data["vw-ratio"]};
@@ -127,9 +127,8 @@ var bridge: Bridge = {
   });
 
   bridge.on("_screenstate", function (data) {
-    const { state, isNight } = data;
-    document.body.classList.toggle("inactive", state === "inactive");
-    document.body.classList.toggle("night", isNight);
+    document.body.classList.toggle("inactive", data.state === "inactive");
+    document.body.classList.toggle("night", data.isNight);
   });
 })();
 
