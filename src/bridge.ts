@@ -41,6 +41,7 @@ interface BridgeEventMap {
 }
 
 var callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
+var receiverMap: Partial<Record<BridgeEvent, (messageEvent: MessageEvent) => void>> = {};
 
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<{ event: BridgeEvent; data: any }>) => {
@@ -87,12 +88,14 @@ var bridge: Bridge = {
 
   on: function (event, callback) {
     callbackMap[event] = callback;
-    window.addEventListener("message", messageReceiver(event));
+    receiverMap[event] = messageReceiver(event);
+    window.addEventListener("message", receiverMap[event]);
   },
 
   off: function (event) {
     delete callbackMap[event];
-    window.removeEventListener("message", messageReceiver(event));
+    window.removeEventListener("message", receiverMap[event]!);
+    delete receiverMap[event];
   },
 
   send: function (target, eventData) {
