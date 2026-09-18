@@ -1,21 +1,60 @@
 @font-face {
-  font-family: BrickPrimary;
+  font-family: Retro;
   font-weight: normal;
   font-style: normal;
-  src: url("./primary.otf");
+  src: url("./retro.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: BrickSecondary;
+  font-family: BrickTiny;
   font-weight: normal;
   font-style: normal;
-  src: url("./secondary.otf");
+  src: url("./tiny-plain.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: BrickTinyBold;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./tiny-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: BrickSmall;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./small-plain.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: BrickSmallBold;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./small-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: BrickMedium;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./medium-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: BrickLarge;
+  font-weight: normal;
+  font-style: normal;
+  src: url("./large-bold.woff2") format("woff2");
+}
+
+header {
+  font-family: "BrickTiny", sans-serif;
 }
 
 body {
-  font-family: "BrickPrimary", sans-serif;
+  font-family: "BrickMedium", sans-serif;
 }
 
 footer {
-  font-family: "BrickSecondary", sans-serif;
+  font-family: "BrickSmallBold", sans-serif;
 }

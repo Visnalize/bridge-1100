@@ -69,6 +69,20 @@ The interface also packs a default stylesheet that can be used to style your app
 </head>
 ```
 
+### Fonts
+
+`font.css` registers the bitmap fonts of the Nokia 1100 firmware itself, named after the sizes it exposes.
+By default, the stylesheet applies `BrickTiny` to `<header>`, `BrickMedium` to `<body>` and `BrickSmallBold` to `<footer>`. Reach for other fonts where appropriate to make your app's text match the phone's native UI.
+
+Family | Firmware font | Em height |
+--- | --- | --- |
+`BrickTiny` | tiny/plain | 8px |
+`BrickTinyBold` | tiny/bold | 8px |
+`BrickSmall` | small/plain | 9px |
+`BrickSmallBold` | small/bold | 9px |
+`BrickMedium` | medium/bold | 11px |
+`BrickLarge` | large/bold | 13px |
+
 ## 🔌 API
 
 ### `on(...)`
