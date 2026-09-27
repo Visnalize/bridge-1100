@@ -138,7 +138,7 @@ __`eventData`__
 
 ### `BridgeEvent`
 
-Available events: `"keypress" | "keyrelease" | "keyhold" | "numpress" | "numrelease" | "numhold" | "shake" | "start" | "pause" | "stop"`
+Available events: `"keypress" | "keyrelease" | "keyhold" | "numpress" | "numrelease" | "numhold" | "shake" | "start" | "pause" | "stop" | "progress"`
 
 ### `KeyCallback`
 
@@ -162,7 +162,7 @@ The callback handler when a shake event is received. Available for the `shake` e
 (...args: any[]) => void
 ```
 
-The callback handler when a gameloop event is received. Available for the `start`, `pause`, and `stop` events.
+The callback handler when a gameloop event is received. Available for the `start`, `pause`, `stop`, and `progress` events. A game sends `progress` to mark a milestone inside a run, such as a level passed, so the app can save it before the run ends.
 
 ### `ShakeIntensity`
 

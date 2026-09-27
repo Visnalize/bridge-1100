@@ -72,6 +72,17 @@ describe("bridge", () => {
     expect(mockCallback).toHaveBeenCalledWith(stopData);
   });
 
+  it('should call the callback with event: "progress"', () => {
+    const mockCallback = vi.fn();
+    bridge.on("progress", mockCallback);
+
+    const progressData = { level: 3 };
+    const messageEvent = createMessageEvent(undefined, "progress", progressData);
+    triggerEvent(messageEvent);
+
+    expect(mockCallback).toHaveBeenCalledWith(progressData);
+  });
+
   it("should not call the callback if the event type does not match", () => {
     const mockCallback = vi.fn();
     bridge.on("keypress", mockCallback);

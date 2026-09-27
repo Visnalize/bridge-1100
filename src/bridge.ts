@@ -21,7 +21,8 @@ type PlayAudioCallback = (audioId: string) => void;
 
 type KeyEvent = "keypress" | "keyrelease" | "keyhold" | "numpress" | "numrelease" | "numhold";
 
-type GameLoopEvent = "start" | "pause" | "stop";
+// progress marks a milestone inside a running game, such as a level passed, for the app to save
+type GameLoopEvent = "start" | "pause" | "stop" | "progress";
 
 interface BridgeEventMap {
   _init: InitCallback;
@@ -36,6 +37,7 @@ interface BridgeEventMap {
   start: GameloopCallback;
   pause: GameloopCallback;
   stop: GameloopCallback;
+  progress: GameloopCallback;
   loadAudio: LoadAudioCallback;
   playAudio: PlayAudioCallback;
 }
