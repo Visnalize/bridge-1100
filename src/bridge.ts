@@ -119,6 +119,12 @@ var bridge: Bridge = {
         --foreground: ${color.root.fg};
         --background: ${color.root.bg};
       }
+      /* All input comes from the phone's keys, so a long press must not select anything in it. */
+      body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
       .inactive {
         --foreground: ${color.inactive.fg};
       }

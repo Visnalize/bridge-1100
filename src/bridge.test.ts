@@ -133,3 +133,51 @@ describe("bridge", () => {
     expect(mockTarget.postMessage).toHaveBeenCalledWith(eventData, "*");
   });
 });
+
+describe("bridge _init", () => {
+  let appendChild: Mock;
+
+  beforeEach(async () => {
+    // init() runs once per import, so each test needs a fresh module.
+    vi.resetModules();
+    appendChild = vi.fn();
+    global.window = {
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    } as unknown as Window & typeof globalThis;
+    global.document = {
+      createElement: () => ({}),
+      head: { appendChild },
+    } as unknown as Document;
+    await import("./bridge");
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const sendInit = () => {
+    // init() registers _init first.
+    const receiver = (global.window.addEventListener as Mock).mock.calls[0][1];
+    const color = {
+      root: { fg: "#000", bg: "#fff" },
+      inactive: { fg: "#111" },
+      night: { fg: "#222", inactive: { fg: "#333" } },
+    };
+    receiver(
+      new MessageEvent("message", {
+        origin: "http://localhost",
+        data: { event: "_init", data: { "vw-ratio": 1.374, color } },
+      })
+    );
+    return appendChild.mock.calls[0][0].textContent as string;
+  };
+
+  it("should turn off text selection and the long-press callout in the game", () => {
+    const css = sendInit();
+
+    expect(css).toMatch(/body\s*\{[^}]*-webkit-touch-callout:\s*none/);
+    expect(css).toMatch(/body\s*\{[^}]*-webkit-user-select:\s*none/);
+    expect(css).toMatch(/body\s*\{[^}]*[^-]user-select:\s*none/);
+  });
+});
