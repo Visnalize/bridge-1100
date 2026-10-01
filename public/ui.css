@@ -1,0 +1,271 @@
+/*
+ * Styles for bridge.ui screens. Sizes copy the phone's own screens, which are set in rem: --r is
+ * one of the phone's rem, as a share of the screen an app gets. Colors fall back to the phone's
+ * so that the screens can be checked in a plain browser tab, where no _init arrives.
+ */
+
+.b-ui {
+  --r: 16.72vh;
+  --b-ink: rgba(0, 0, 0, 0.8);
+  --b-fg: var(--foreground, #a3b65c);
+  --b-bg: var(--background, #000000e6);
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0 auto;
+  width: calc(100vh * var(--vw-ratio, 1.374));
+  font-size: var(--r);
+  line-height: normal;
+}
+
+.b-ui-open .b-ui {
+  display: block;
+}
+
+.b-ui-open body > :not(.b-ui) {
+  visibility: hidden;
+}
+
+.b-screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.b-screen[hidden] {
+  display: none;
+}
+
+.b-ui ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.b-ui footer {
+  margin: 0;
+  line-height: normal;
+  font-size: calc(var(--r) * 0.85);
+  text-align: center;
+}
+
+/* Header: the title between two lines */
+
+.b-header {
+  display: flex;
+  gap: calc(var(--r) * 0.1);
+  margin-bottom: calc(var(--r) * 0.1);
+  font-size: calc(var(--r) * 0.65);
+}
+
+.b-header > span {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--r) * 0.2);
+  white-space: nowrap;
+}
+
+.b-header > span::before,
+.b-header > span::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: calc(var(--r) * 0.05);
+  background: currentcolor;
+}
+
+/* List */
+
+.b-list {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  padding-inline-end: calc(var(--r) * 0.4);
+  margin-bottom: calc(var(--r) * 0.1);
+}
+
+.b-list > ul {
+  height: 100%;
+  overflow: hidden;
+}
+
+.b-list li {
+  height: 33.33%;
+  display: flex;
+  align-items: center;
+}
+
+.b-label {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-inline-start: calc(var(--r) * 0.05);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The font sits slightly high in its box, the same correction as the phone's */
+.b-label > span {
+  margin-top: calc(var(--r) * 0.2);
+}
+
+.b-list li.b-active > .b-label {
+  background: var(--b-bg);
+  color: var(--b-fg);
+}
+
+.b-scrollbar {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  width: calc(var(--r) * 0.08);
+  height: 100%;
+  margin-inline-end: calc(var(--r) * 0.1);
+  background: currentcolor;
+}
+
+.b-thumb {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(var(--r) * 0.2);
+  transform: translateX(-50%);
+  border: calc(var(--r) * 0.075) solid;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background: var(--b-fg);
+}
+
+/* Text, paged three lines at a time */
+
+.b-text {
+  flex: 1;
+  margin-bottom: calc(var(--r) * 0.25);
+  overflow: hidden;
+  position: relative;
+}
+
+.b-text > span {
+  display: block;
+  overflow-wrap: break-word;
+}
+
+/* Confirm */
+
+.b-prompt {
+  flex: 1;
+  font-size: calc(var(--r) * 1.25);
+}
+
+.b-hint {
+  margin-top: auto;
+  font-size: calc(var(--r) * 0.85);
+  text-align: end;
+}
+
+/* Result */
+
+.b-result-screen {
+  flex-direction: row;
+  align-items: flex-start;
+  padding-top: calc(var(--r) * 0.25);
+  font-family: BrickLarge, sans-serif;
+  line-height: 1.25;
+}
+
+.b-message {
+  max-width: 70%;
+  margin-inline-end: var(--r);
+  font-size: calc(var(--r) * 1.125);
+  white-space: pre-line;
+}
+
+.b-icon img {
+  display: block;
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
+}
+
+.b-done .b-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: calc(var(--r) * 0.75);
+  height: calc(var(--r) * 0.75);
+  margin-top: calc(var(--r) * 1.125);
+  margin-inline-end: calc(var(--r) * 0.625);
+  border: calc(var(--r) * 0.075) dotted var(--b-ink);
+}
+
+.b-done .b-icon img {
+  width: calc(var(--r) * 1.5);
+  height: calc(var(--r) * 1.5);
+  margin-top: calc(var(--r) * -0.875);
+  margin-inline-start: calc(var(--r) * -0.125);
+}
+
+/* Number input */
+
+.b-editing {
+  height: calc(var(--r) * 0.8);
+  display: flex;
+  justify-content: space-between;
+  font-size: calc(var(--r) * 0.625);
+}
+
+.b-input-label {
+  margin: 0;
+  font-weight: normal;
+  white-space: nowrap;
+  font-size: calc(var(--r) * 0.85);
+}
+
+.b-field {
+  flex: 1;
+  margin-bottom: calc(var(--r) * 0.25);
+  padding: 2px;
+  border: calc(var(--r) * 0.1) solid #000;
+  overflow-wrap: break-word;
+}
+
+.b-cursor {
+  border-inline-start: 1px solid #000;
+  animation: b-blink 1s cubic-bezier(0.2, 1, 0.2, 1) infinite;
+}
+
+@keyframes b-blink {
+  50% {
+    border-inline-start-color: transparent;
+  }
+}
+
+/* Loading */
+
+.b-loading-screen {
+  justify-content: flex-start;
+  padding: 5%;
+  padding-inline-start: 0;
+}
+
+.b-progress {
+  height: 27%;
+  margin-bottom: 5%;
+}
+
+.b-progress img {
+  display: block;
+  height: 100%;
+}

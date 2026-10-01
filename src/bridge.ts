@@ -45,17 +45,34 @@ interface BridgeEventMap {
 var callbackMap: Partial<Record<BridgeEvent, BridgeEventMap[BridgeEvent]>> = {};
 var receiverMap: Partial<Record<BridgeEvent, (messageEvent: MessageEvent) => void>> = {};
 
+var KEY_EVENTS: BridgeEvent[] = ["keypress", "keyrelease", "keyhold", "numpress", "numrelease", "numhold"];
+
+export type KeyHandler = (event: KeyEvent, key: string | number) => boolean;
+
+// Set by the UI kit. It sees every key first and returns true when an open screen used the key.
+var keyHandler: KeyHandler | null = null;
+// The last message the key handler used, which the app's own callbacks then skip.
+var consumed: MessageEvent | null = null;
+
+export function setKeyHandler(handler: KeyHandler | null) {
+  keyHandler = handler;
+}
+
+function isAllowedOrigin(origin: string) {
+  return /^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life|netlify)/.test(origin);
+}
+
 function messageReceiver(event: BridgeEvent) {
   return (messageEvent: MessageEvent<{ event: BridgeEvent; data: any }>) => {
-    if (
-      !/^(https?|capacitor):\/\/.*(localhost|brick1100|lhr.life|netlify)/.test(messageEvent.origin)
-    ) {
+    if (!isAllowedOrigin(messageEvent.origin)) {
       throw new Error("Unauthorized origin: " + messageEvent.origin);
     }
 
     if (!event) {
       throw new Error("Missing eventType");
     }
+
+    if (messageEvent === consumed) return;
 
     var message = messageEvent.data;
     var callback = callbackMap[event];
@@ -140,6 +157,14 @@ var bridge: Bridge = {
   bridge.on("_screenstate", function (data) {
     document.body.classList.toggle("inactive", data.state === "inactive");
     document.body.classList.toggle("night", data.isNight);
+  });
+
+  // Added here, before the app can call on(), so an open screen gets each key before the app does.
+  window.addEventListener("message", function (messageEvent: MessageEvent) {
+    var message = messageEvent.data;
+    if (!keyHandler || !message || !isAllowedOrigin(messageEvent.origin)) return;
+    if (KEY_EVENTS.indexOf(message.event) === -1) return;
+    if (keyHandler(message.event, message.data)) consumed = messageEvent;
   });
 })();
 

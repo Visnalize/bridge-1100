@@ -1,12 +1,3 @@
-html {
-  /* DEPRECATED: to be removed in the next patch */
-  --vw-ratio: 1.374;
-  --c-green: #8c9c7b;
-  --c-black: #000000;
-  --c-black-alpha: rgba(0, 0, 0, 0.7);
-  --c-trans: var(--c-green);
-}
-
 html,
 body {
   font-size: 15vh;
