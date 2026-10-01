@@ -135,7 +135,7 @@ How screens work:
 
 Option | Type | Default | |
 --- | --- | --- | ---
-`items` | `string[]` | | The rows. Three fit on the screen; more scroll.
+`items` | `string[]` | | The rows. Three fit on the screen; more scroll. A selected row too long for the screen scrolls its text, as on the phone.
 `title` | `string` | | Shown in the header. No header without it.
 `index` | `number` | `0` | The row selected when the list opens.
 `action` | `string` | `"Select"` | The footer label.

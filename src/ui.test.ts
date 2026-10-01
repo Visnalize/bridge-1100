@@ -60,6 +60,44 @@ describe("ui", () => {
       expect(onSelect).toHaveBeenCalledWith(1, expect.anything());
     });
 
+    describe("a row too long for the screen", () => {
+      // happy-dom does no layout, so give every label a width and every text its own length.
+      var textWidths: Record<string, number> = { "A row much longer than the screen": 300, Short: 40 };
+
+      beforeEach(() => {
+        vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(100);
+        vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockImplementation(function (this: HTMLElement) {
+          return textWidths[this.textContent || ""] || 0;
+        });
+      });
+
+      afterEach(() => {
+        vi.restoreAllMocks();
+      });
+
+      var label = (text: string) =>
+        Array.prototype.find.call(document.querySelectorAll(".b-label"), function (el: HTMLElement) {
+          return el.textContent === text;
+        }) as HTMLElement;
+
+      it("scrolls its text by the part that does not fit while it is selected", () => {
+        ui.list({ items: ["A row much longer than the screen", "Short"] });
+
+        var long = label("A row much longer than the screen");
+        expect(long.classList.contains("b-marquee")).toBe(true);
+        expect((long.firstChild as HTMLElement).style.getPropertyValue("--b-marquee-distance")).toBe("200px");
+      });
+
+      it("stops scrolling once another row is selected", () => {
+        ui.list({ items: ["A row much longer than the screen", "Short"] });
+
+        press("down");
+
+        expect(label("A row much longer than the screen").classList.contains("b-marquee")).toBe(false);
+        expect(label("Short").classList.contains("b-marquee")).toBe(false);
+      });
+    });
+
     it("closes on Clear when no onBack is given", () => {
       ui.list({ items: ["A"] });
 

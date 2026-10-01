@@ -201,13 +201,23 @@ function list(options: ListOptions): Screen {
 
   function render() {
     rows.forEach(function (row, i) {
-      row.className = i === index ? "b-active" : "";
+      var active = i === index;
+      var label = row.firstChild as HTMLElement;
+      var text = label.firstChild as HTMLElement;
+      // The selected row scrolls whatever does not fit, as the phone's lists do.
+      var overflow = active ? text.scrollWidth - label.clientWidth : 0;
+      row.className = active ? "b-active" : "";
+      label.className = overflow > 0 ? "b-label b-marquee" : "b-label";
+      text.style.setProperty("--b-marquee-distance", overflow > 0 ? overflow + "px" : "");
     });
     thumb.style.top = (index * 100) / items.length + "%";
     // Rows scroll a page of three at a time, as the phone's lists do.
     var first = rows[index - (index % LINES)];
     if (first) ul.scrollTop = first.offsetTop;
   }
+
+  // A row's width changes once the phone's font arrives, which may be after the list opens.
+  if (document.fonts) document.fonts.ready.then(render);
 
   var screen = push({
     el: el,

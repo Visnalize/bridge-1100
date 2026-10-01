@@ -88,6 +88,8 @@
 /* List */
 
 .b-list {
+  /* Overflowing text scrolls towards the end edge, so right-to-left steps the other way */
+  --b-marquee-sign: -1;
   flex: 1;
   min-height: 0;
   position: relative;
@@ -123,9 +125,50 @@
   margin-top: calc(var(--r) * 0.2);
 }
 
+.b-label.b-marquee {
+  text-overflow: clip;
+}
+
+.b-label.b-marquee > span {
+  animation: b-marquee 5s infinite;
+}
+
 .b-list li.b-active > .b-label {
   background: var(--b-bg);
   color: var(--b-fg);
+}
+
+[dir="rtl"] .b-list {
+  --b-marquee-sign: 1;
+}
+
+/*
+ * An old LCD ticker: the text steps (rather than glides) towards the end edge to show the rest,
+ * holds, then cuts back to the start and scrolls again.
+ */
+@keyframes b-marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  10% {
+    transform: translateX(0);
+    animation-timing-function: steps(20, jump-end);
+  }
+
+  65% {
+    transform: translateX(calc(var(--b-marquee-sign, -1) * var(--b-marquee-distance, 0px)));
+  }
+
+  75% {
+    transform: translateX(calc(var(--b-marquee-sign, -1) * var(--b-marquee-distance, 0px)));
+    animation-timing-function: steps(1, jump-end);
+  }
+
+  76%,
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .b-scrollbar {
