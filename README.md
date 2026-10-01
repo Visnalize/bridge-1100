@@ -83,6 +83,125 @@ Family | Firmware font | Em height |
 `BrickMedium` | medium/bold | 11px |
 `BrickLarge` | large/bold | 13px |
 
+## 🧱 Screens
+
+`bridge.ui` opens screens that look and behave like the phone's own: a title between two lines, a
+list with a highlighted row and a scroll bar, text paged three lines at a time, a result with the
+phone's icons, a number field, a loading bar. Use them so your app feels like part of the phone,
+and so you do not have to write their key handling yourself.
+
+Add `ui.css` next to the other two stylesheets:
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/index.css" />
+<link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/font.css" />
+<link rel="stylesheet" href="https://unpkg.com/bridge-1100/dist/ui.css" />
+```
+
+```js
+var ui = window.bridge.ui;
+
+var menu = ui.list({
+  title: "Sudoku",
+  items: ["New game", "Level", "Instructions"],
+  onSelect: function (index) {
+    if (index === 0) {
+      menu.close(); // your game shows again
+      startGame();
+    }
+    if (index === 2) {
+      ui.text({ title: "Instructions", text: "Fill every row..." }); // opens on top of the menu
+    }
+  },
+  onBack: function () {
+    bridge.send(window.parent, { event: "stop" });
+  },
+});
+```
+
+How screens work:
+
+- **They stack.** Each call opens a screen on top of the others and returns it. `screen.close()`
+  removes it and shows the one below.
+- **The top screen takes every key.** While a screen is open, your own `keypress` and `numpress`
+  callbacks are not called, not even for the key that closes the last screen. They are called
+  again once every screen is closed.
+- **Your page is hidden** while a screen is open, and shown again when the last one closes.
+- **Clear goes back.** Every screen closes on Clear unless you pass `onBack`.
+- Callbacks (except `onClose`) get the screen as their last argument, so `onBack: function (screen) { screen.close() }`
+  works without keeping a variable.
+
+### `ui.list(options)`
+
+Option | Type | Default | |
+--- | --- | --- | ---
+`items` | `string[]` | | The rows. Three fit on the screen; more scroll.
+`title` | `string` | | Shown in the header. No header without it.
+`index` | `number` | `0` | The row selected when the list opens.
+`action` | `string` | `"Select"` | The footer label.
+`onSelect` | `(index, screen) => void` | | On OK.
+`onChange` | `(index, screen) => void` | | When the selected row changes.
+`onBack` | `(screen) => void` | closes | On Clear.
+
+### `ui.text(options)`
+
+Long text, paged three lines at a time. Up and down turn pages; OK turns the page, and on the last
+page calls `onDone`.
+
+Option | Type | Default
+--- | --- | ---
+`text` | `string` |
+`title` | `string` |
+`action` | `string` | `"OK"`
+`onDone` | `(screen) => void` | closes
+`onBack` | `(screen) => void` | closes
+
+### `ui.confirm(options)`
+
+A question in large text, answered with OK or Clear.
+
+Option | Type | Default
+--- | --- | ---
+`text` | `string` |
+`info` | `string` | A short note at the bottom end, such as a count
+`action` | `string` | `"OK"`
+`onDone` | `(screen) => void` | closes
+`onBack` | `(screen) => void` | closes
+
+### `ui.result(options)`
+
+A short message that closes by itself, or sooner on any key.
+
+Option | Type | Default
+--- | --- | ---
+`message` | `string` |
+`type` | `"done" \| "fail" \| "info"` | no icon
+`timeout` | `number` (ms) | `1500`
+`onClose` | `() => void` |
+
+### `ui.number(options)`
+
+A number field. Number keys type, Clear deletes the last digit and goes back once the field is
+empty, OK gives the value as a string.
+
+Option | Type | Default
+--- | --- | ---
+`title` | `string` |
+`value` | `string` | `""`
+`maxLength` | `number` | no limit; the header counts down when set
+`action` | `string` | `"OK"`
+`onDone` | `(value, screen) => void` | closes
+`onBack` | `(screen) => void` | closes
+
+### `ui.loading(options?)`
+
+The phone's loading bar with a message (`"Loading"` by default). It takes no keys: close it with
+the returned `screen.close()`.
+
+### `ui.closeAll()` and `ui.isOpen()`
+
+Close every screen, or check whether any is open.
+
 ## 🔌 API
 
 ### `on(...)`
