@@ -83,6 +83,36 @@ Family | Firmware font | Em height |
 `BrickMedium` | medium/bold | 11px |
 `BrickLarge` | large/bold | 13px |
 
+## 🟩 LCD grid
+
+The Nokia 1100's screen is 96 x 65 pixels, in two colours. `bridge.lcd` lets a game draw on that grid,
+so it looks the way it would on the phone, whatever the device and the phone model in Brick 1100.
+Nothing runs until a game calls `lcd.watch()` or `lcd.fit()`.
+
+The screen is always 65 pixels tall. Its width depends on the phone model, as each model's screen has
+its own shape: about 87 pixels on the 1100, 90 on the 3310 and 98 on the 5110.
+
+- `lcd.watch()` sets `--px`, one LCD pixel in CSS pixels, and `--cols`, the screen's width in them,
+  on the root element, and keeps them up to date. Size things in whole pixels with
+  `calc(var(--px) * 5)`.
+- `lcd.fit(el, 96, 65)` sizes an element to a 96 x 65 grid, as large as fits and centred, with its own
+  `--px`. The playfield is then the same on every model, so a game plays the same everywhere.
+- For a canvas, make it exactly the grid, for example 96 x 65, fit it, and give it
+  `image-rendering: pixelated`. Call `lcd.inkCanvas(ctx)` at the end of each frame to draw it in the
+  screen's dark colour.
+- `lcd.drawText(ctx, "0120", x, y)` draws digits in a 3 x 5 pixel font, for a score on a canvas.
+
+```js
+var canvas = document.querySelector("canvas");
+canvas.width = 96;
+canvas.height = 65;
+bridge.lcd.fit(canvas, 96, 65);
+```
+
+The screen's dark colour is a little see-through, so pure black looks darker than it, and so does
+dark drawn over dark. Draw each pixel once, in that colour. Draw a 1-pixel line as an inset
+`box-shadow`, not a `border`: a browser rounds borders down to whole device pixels.
+
 ## 🧱 Screens
 
 `bridge.ui` opens screens that look and behave like the phone's own: a title between two lines, a
