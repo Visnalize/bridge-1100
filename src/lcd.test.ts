@@ -67,6 +67,16 @@ describe("lcd", () => {
     expect(lcd.pixelSize(96 * 2.4995, 201, 96, 65, 2) * 2).toBe(5);
   });
 
+  it("puts a gap at the start of every LCD pixel, a whole number of device pixels apart", () => {
+    expect(lcd.gapPositions(4, 5)).toEqual([0, 5, 10, 15]);
+  });
+
+  it("puts each gap on the device pixel nearest the pixel's edge when pixels are fractional", () => {
+    // 5.4 device pixels a pixel: edges at 0, 5.4, 10.8, 16.2 and 21.6
+    expect(lcd.gapPositions(5, 5.4)).toEqual([0, 5, 11, 16, 22]);
+    lcd.gapPositions(96, 4.52).forEach((position, i) => expect(Math.abs(position - i * 4.52)).toBeLessThanOrEqual(0.5));
+  });
+
   it("keeps a fitted grid fitted after a resize", () => {
     resize({ width: 272, height: 201 });
     var el = document.createElement("div");

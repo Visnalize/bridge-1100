@@ -1,11 +1,13 @@
-// The phone's LCD, as a grid of square pixels for a game to draw on.
+// The phone's LCD, as a grid of square pixels for a game to draw on, and the one place its geometry
+// is defined: Brick 1100 sizes its own screen from these too, so a game and the phone always agree.
 //
 // The screen is always ROWS pixels tall. Its width in pixels depends on the phone model, as each
 // model's screen has its own shape, so a game reads it from `--cols` or `lcd.cols()`: it is not
 // always the Nokia 1100's 96. Nothing runs until a game calls `watch` or `fit`, so a page that only
 // imports the bridge, such as Brick 1100's own, is left as it is.
 
-/** The screen's height in LCD pixels, on every phone model. */
+/** The screen in LCD pixels: the Nokia 1100's 96 x 65, on every phone model. */
+var COLS = 96;
 var ROWS = 65;
 
 // Slack for the rounding of CSS lengths: a size worked out to be 5 device pixels may come back 4.999.
@@ -51,6 +53,18 @@ function pixelSize(width: number, height: number, cols: number, rows: number, dp
   var px = Math.min(width / cols, height / rows);
   var whole = Math.round(px * dpr);
   return Math.abs(px * dpr - whole) < ROUNDING ? whole / dpr : px;
+}
+
+/**
+ * Where the gaps between `count` LCD pixels of `devicePx` device pixels each fall, in device pixels:
+ * the device pixel nearest each pixel's start edge. When an LCD pixel is a fraction of a device
+ * pixel, this is as close as a one-device-pixel line can get, so neighbouring gaps are a device pixel
+ * nearer or further apart, as the pixels' own edges are.
+ */
+function gapPositions(count: number, devicePx: number): number[] {
+  var positions: number[] = [];
+  for (var i = 0; i < count; i++) positions.push(Math.round(i * devicePx));
+  return positions;
 }
 
 /** Rounds a length in CSS pixels to a device pixel, so a pixelated canvas stays sharp. */
@@ -173,9 +187,11 @@ function inkCanvas(ctx: CanvasRenderingContext2D) {
 }
 
 var lcd = {
+  COLS: COLS,
   ROWS: ROWS,
   cols: cols,
   pixelSize: pixelSize,
+  gapPositions: gapPositions,
   watch: watch,
   fit: fit,
   drawPixels: drawPixels,
