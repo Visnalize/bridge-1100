@@ -8,10 +8,8 @@
 /** The screen's height in LCD pixels, on every phone model. */
 var ROWS = 65;
 
-// From this many device pixels per LCD pixel, a fitted grid shrinks to a whole number of them, so
-// every LCD pixel is drawn the same size. Below it, shrinking would cost too much of the screen, so
-// neighbouring pixels may differ by one device pixel.
-var WHOLE_FROM = 4;
+// Slack for the rounding of CSS lengths: a size worked out to be 5 device pixels may come back 4.999.
+var ROUNDING = 0.01;
 
 // The 3 x 5 pixel font, drawn by hand so no digit is ever smoothed. "#" is a dark pixel.
 var GLYPHS: Record<string, string[]> = {
@@ -47,9 +45,12 @@ var watching = false;
  * @returns the size of one LCD pixel, in CSS pixels
  */
 function pixelSize(width: number, height: number, cols: number, rows: number, dpr: number): number {
+  // As large as fits, so the grid fills the screen it is given. Brick 1100 gives a game a screen of
+  // exactly 96 x 65 of its own LCD pixels, so this is the phone's own pixel; snapping it to fewer
+  // device pixels would leave a border round the game.
   var px = Math.min(width / cols, height / rows);
-  if (px * dpr >= WHOLE_FROM) px = Math.floor(px * dpr) / dpr;
-  return px;
+  var whole = Math.round(px * dpr);
+  return Math.abs(px * dpr - whole) < ROUNDING ? whole / dpr : px;
 }
 
 /** Rounds a length in CSS pixels to a device pixel, so a pixelated canvas stays sharp. */

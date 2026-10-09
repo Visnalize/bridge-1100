@@ -56,11 +56,15 @@ describe("lcd", () => {
     expect(el.style.getPropertyValue("--px")).toBe(`${px}px`);
   });
 
-  it("draws every LCD pixel the same size once it has enough device pixels", () => {
-    // 8.5 device pixels a pixel shrinks to 8, so no pixel is a device pixel wider than its neighbour
-    expect(lcd.pixelSize(272, 201, 96, 65, 3) * 3).toBe(8);
-    // At 2.8 device pixels a pixel, shrinking to 2 would cost a quarter of the screen
+  it("fills the screen it is given, at a fraction of a device pixel if need be", () => {
+    // 8.5 device pixels a pixel stays 8.5: shrinking to 8 would leave a border round the game
+    expect(lcd.pixelSize(272, 201, 96, 65, 3) * 3).toBeCloseTo(8.5);
     expect(lcd.pixelSize(272, 201, 96, 65, 1)).toBeCloseTo(272 / 96);
+  });
+
+  it("takes a size within rounding of a whole number of device pixels as exactly that", () => {
+    // 4.999 device pixels, as a length worked out to be 5 can come back
+    expect(lcd.pixelSize(96 * 2.4995, 201, 96, 65, 2) * 2).toBe(5);
   });
 
   it("keeps a fitted grid fitted after a resize", () => {
