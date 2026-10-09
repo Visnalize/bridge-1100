@@ -1,5 +1,7 @@
-// The phone's LCD, as a grid of square pixels for a game to draw on, and the one place its geometry
-// is defined: Brick 1100 sizes its own screen from these too, so a game and the phone always agree.
+// The phone's LCD, as a grid of pixels 6 wide to 7 tall for a game to draw on, and the one place its
+// geometry is defined: Brick 1100 sizes its own screen from these too, so a game and the phone always
+// agree. `--px` is a pixel's height and `--px-x` its width: size vertical things in the one and
+// horizontal things in the other.
 //
 // The screen is always ROWS pixels tall. Its width in pixels depends on the phone model, as each
 // model's screen has its own shape, so a game reads it from `--cols` or `lcd.cols()`: it is not
@@ -50,13 +52,14 @@ var watching = false;
 
 /**
  * @param width The space available, in CSS pixels
- * @returns the size of one LCD pixel, in CSS pixels
+ * @returns the height of one LCD pixel, in CSS pixels, for a grid of `cols` x `rows` as large as fits;
+ *   its width is PIXEL_ASPECT of that
  */
 function pixelSize(width: number, height: number, cols: number, rows: number, dpr: number): number {
   // As large as fits, so the grid fills the screen it is given. Brick 1100 gives a game a screen of
   // exactly 96 x 65 of its own LCD pixels, so this is the phone's own pixel; snapping it to fewer
   // device pixels would leave a border round the game.
-  var px = Math.min(width / cols, height / rows);
+  var px = Math.min(width / (cols * PIXEL_ASPECT), height / rows);
   var whole = Math.round(px * dpr);
   return Math.abs(px * dpr - whole) < ROUNDING ? whole / dpr : px;
 }
@@ -87,32 +90,35 @@ function apply(entry: Fitted): number {
     entry.rows,
     window.devicePixelRatio || 1
   );
+  var column = px * PIXEL_ASPECT;
   var style = entry.el.style;
   style.position = "absolute";
-  style.width = entry.cols * px + "px";
+  style.width = entry.cols * column + "px";
   style.height = entry.rows * px + "px";
-  style.left = snap((window.innerWidth - entry.cols * px) / 2) + "px";
+  style.left = snap((window.innerWidth - entry.cols * column) / 2) + "px";
   style.top = snap((window.innerHeight - entry.rows * px) / 2) + "px";
   style.setProperty("--px", px + "px");
+  style.setProperty("--px-x", column + "px");
   return px;
 }
 
 /** How many whole LCD pixels fit across the screen. */
 function cols(): number {
-  return Math.floor(window.innerWidth / (window.innerHeight / ROWS));
+  return Math.floor(window.innerWidth / ((window.innerHeight / ROWS) * PIXEL_ASPECT));
 }
 
 function update() {
   var root = document.documentElement.style;
   root.setProperty("--px", window.innerHeight / ROWS + "px");
+  root.setProperty("--px-x", (window.innerHeight / ROWS) * PIXEL_ASPECT + "px");
   root.setProperty("--cols", String(cols()));
   fitted.forEach(apply);
 }
 
 /**
- * Sets `--px` and `--cols` on the root element, and keeps them, and every fitted grid, up to date as
- * the screen resizes. `--px` is one LCD pixel in CSS pixels, for sizing in CSS:
- * `calc(var(--px) * 5)`.
+ * Sets `--px`, `--px-x` and `--cols` on the root element, and keeps them, and every fitted grid, up to
+ * date as the screen resizes. `--px` is an LCD pixel's height and `--px-x` its width, in CSS pixels,
+ * for sizing in CSS: `calc(var(--px-x) * 5)` across, `calc(var(--px) * 5)` down.
  */
 function watch() {
   if (!watching) {
@@ -123,12 +129,13 @@ function watch() {
 }
 
 /**
- * Keeps `el` sized to a `cols` x `rows` grid, as large as fits and centred, with its own `--px`. With
+ * Keeps `el` sized to a `cols` x `rows` grid, as large as fits and centred, with its own `--px` and
+ * `--px-x`. With
  * a fixed playfield, a game plays the same on every model, and only the empty margin changes. A
  * canvas game makes its canvas `cols` x `rows` and lets CSS scale it with
- * `image-rendering: pixelated`, so it can only ever draw whole LCD pixels.
+ * `image-rendering: pixelated`, so it can only ever draw whole LCD pixels, in the LCD's own shape.
  *
- * @returns the size of one LCD pixel, in CSS pixels
+ * @returns the height of one LCD pixel, in CSS pixels
  */
 function fit(el: HTMLElement, cols: number, rows?: number): number {
   watch();

@@ -30,9 +30,9 @@ describe("lcd", () => {
 
   // The game area of each phone model, in CSS pixels, as measured in Brick 1100
   it.each([
-    ["1100", 272, 201, 87],
-    ["3310", 295, 211, 90],
-    ["5110", 252, 167, 98],
+    ["1100", 272, 201, 102],
+    ["3310", 295, 211, 106],
+    ["5110", 252, 167, 114],
   ])("gives the %s's screen 65 rows and as many whole columns as fit", (_, width, height, cols) => {
     resize({ width, height });
     lcd.watch();
@@ -42,29 +42,39 @@ describe("lcd", () => {
     expect(parseFloat(document.documentElement.style.getPropertyValue("--px"))).toBeCloseTo(
       height / 65
     );
+    expect(parseFloat(document.documentElement.style.getPropertyValue("--px-x"))).toBeCloseTo(
+      (height / 65) * (6 / 7)
+    );
   });
 
-  it("fits a grid as large as it can, centred, with square pixels", () => {
+  it("has the Nokia 1100's pixel: 6 wide to 7 tall", () => {
+    expect(lcd.PIXEL_ASPECT).toBeCloseTo(6 / 7);
+  });
+
+  it("fits a grid as large as it can, centred, with pixels 6 wide to 7 tall", () => {
     resize({ width: 272, height: 201 });
     var el = document.createElement("div");
     var px = lcd.fit(el, 96, 65);
-    expect(px).toBeCloseTo(272 / 96);
-    expect(parseFloat(el.style.width)).toBeCloseTo(272);
-    expect(parseFloat(el.style.height)).toBeCloseTo(65 * px);
-    expect(parseFloat(el.style.left)).toBeCloseTo(0);
-    expect(parseFloat(el.style.top)).toBeCloseTo((201 - 65 * px) / 2, 0);
+    var column = px * (6 / 7);
+    // The height is the limit here: 65 rows fill it, and 96 columns leave a margin either side
+    expect(px).toBeCloseTo(201 / 65);
+    expect(parseFloat(el.style.height)).toBeCloseTo(201);
+    expect(parseFloat(el.style.width)).toBeCloseTo(96 * column);
+    expect(parseFloat(el.style.top)).toBeCloseTo(0);
+    expect(parseFloat(el.style.left)).toBeCloseTo((272 - 96 * column) / 2, 0);
     expect(el.style.getPropertyValue("--px")).toBe(`${px}px`);
+    expect(parseFloat(el.style.getPropertyValue("--px-x"))).toBeCloseTo(column);
   });
 
   it("fills the screen it is given, at a fraction of a device pixel if need be", () => {
-    // 8.5 device pixels a pixel stays 8.5: shrinking to 8 would leave a border round the game
-    expect(lcd.pixelSize(272, 201, 96, 65, 3) * 3).toBeCloseTo(8.5);
-    expect(lcd.pixelSize(272, 201, 96, 65, 1)).toBeCloseTo(272 / 96);
+    // 9.28 device pixels a pixel stays 9.28: shrinking to 9 would leave a border round the game
+    expect(lcd.pixelSize(272, 201, 96, 65, 3) * 3).toBeCloseTo((201 / 65) * 3);
+    expect(lcd.pixelSize(272, 201, 96, 65, 1)).toBeCloseTo(201 / 65);
   });
 
   it("takes a size within rounding of a whole number of device pixels as exactly that", () => {
     // 4.999 device pixels, as a length worked out to be 5 can come back
-    expect(lcd.pixelSize(96 * 2.4995, 201, 96, 65, 2) * 2).toBe(5);
+    expect(lcd.pixelSize(96 * (6 / 7) * 2.4995, 400, 96, 65, 2) * 2).toBe(5);
   });
 
   it("puts a gap at the start of every LCD pixel, a whole number of device pixels apart", () => {
