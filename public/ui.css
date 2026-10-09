@@ -350,15 +350,35 @@
 .b-field {
   flex: 1;
   margin-bottom: calc(var(--b-px) * 2);
-  padding: var(--b-px) var(--b-px-x);
+  /* A column clear of the outline for the cursor before the first digit */
+  padding: var(--b-px) var(--b-px-x) var(--b-px) calc(var(--b-px-x) * 2);
   box-shadow: inset var(--b-px-x) 0 0 0 #000, inset calc(var(--b-px-x) * -1) 0 0 0 #000,
     inset 0 var(--b-px) 0 0 #000, inset 0 calc(var(--b-px) * -1) 0 0 #000;
   overflow-wrap: break-word;
 }
 
-/* One pixel wide, on for half a second and off for half, fading a little as an LCD's crystals turn */
+/*
+ * The cursor, after the last digit: one pixel wide, in the column a digit leaves clear after it, so
+ * it takes no room of its own. A box rather than a border, which a browser would round down to
+ * whole device pixels. The span is empty, so it is given the font's height: its ascent and descent
+ * add up to its size, from the descent's bottom up. On for half a second and off for half, fading
+ * a little as an LCD's crystals turn.
+ */
 .b-cursor {
-  border-left: var(--b-px-x) solid #000;
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  vertical-align: text-bottom;
+}
+
+.b-cursor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--b-px-x) * -1);
+  width: var(--b-px-x);
+  background: #000;
   animation: b-blink 1s linear infinite;
 }
 
@@ -366,12 +386,12 @@
   0%,
   50%,
   100% {
-    border-left-color: #000;
+    opacity: 1;
   }
 
   62%,
   92% {
-    border-left-color: transparent;
+    opacity: 0;
   }
 }
 
