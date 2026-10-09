@@ -3,10 +3,10 @@
 // agree. `--px` is a pixel's height and `--px-x` its width: size vertical things in the one and
 // horizontal things in the other.
 //
-// The screen is always ROWS pixels tall. Its width in pixels depends on the phone model, as each
-// model's screen has its own shape, so a game reads it from `--cols` or `lcd.cols()`: it is not
-// always the Nokia 1100's 96. Nothing runs until a game calls `watch` or `fit`, so a page that only
-// imports the bridge, such as Brick 1100's own, is left as it is.
+// The screen is always ROWS pixels tall. Brick 1100 gives a game COLS columns on every phone model; a
+// game that fills whatever page it is given reads the width from `--cols` or `lcd.cols()`. Nothing
+// runs until a game calls `watch` or `fit`, so a page that only imports the bridge, such as Brick
+// 1100's own, is left as it is.
 
 /** The screen in LCD pixels: the Nokia 1100's 96 x 65, on every phone model. */
 var COLS = 96;
@@ -104,7 +104,8 @@ function apply(entry: Fitted): number {
 
 /** How many whole LCD pixels fit across the screen. */
 function cols(): number {
-  return Math.floor(window.innerWidth / ((window.innerHeight / ROWS) * PIXEL_ASPECT));
+  // With the slack, a screen exactly COLS wide is not counted a fraction short of it
+  return Math.floor(window.innerWidth / ((window.innerHeight / ROWS) * PIXEL_ASPECT) + ROUNDING);
 }
 
 function update() {
@@ -130,9 +131,8 @@ function watch() {
 
 /**
  * Keeps `el` sized to a `cols` x `rows` grid, as large as fits and centred, with its own `--px` and
- * `--px-x`. With
- * a fixed playfield, a game plays the same on every model, and only the empty margin changes. A
- * canvas game makes its canvas `cols` x `rows` and lets CSS scale it with
+ * `--px-x`. With a fixed playfield, a game plays the same on every model, and only the empty margin
+ * changes. A canvas game makes its canvas `cols` x `rows` and lets CSS scale it with
  * `image-rendering: pixelated`, so it can only ever draw whole LCD pixels, in the LCD's own shape.
  *
  * @returns the height of one LCD pixel, in CSS pixels

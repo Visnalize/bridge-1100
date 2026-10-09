@@ -47,6 +47,13 @@ describe("lcd", () => {
     );
   });
 
+  // Brick 1100 gives a game exactly 96 columns, but dividing it back out can land a fraction under
+  it("counts a screen exactly 96 columns wide as 96", () => {
+    resize({ width: 96 * (350 / 65) * (6 / 7), height: 350 });
+    lcd.watch();
+    expect(lcd.cols()).toBe(96);
+  });
+
   it("has the Nokia 1100's pixel: 6 wide to 7 tall", () => {
     expect(lcd.PIXEL_ASPECT).toBeCloseTo(6 / 7);
   });
