@@ -9,6 +9,12 @@
 /** The screen in LCD pixels: the Nokia 1100's 96 x 65, on every phone model. */
 var COLS = 96;
 var ROWS = 65;
+/**
+ * An LCD pixel's width as a share of its height. The Nokia 1100's pixels are taller than wide, as
+ * its circles come out upright ovals and its 96 x 65 panel is 1.27 times as wide as tall, not 1.48;
+ * the phone's own fonts are drawn on pixels of this shape.
+ */
+var PIXEL_ASPECT = 6 / 7;
 
 // Slack for the rounding of CSS lengths: a size worked out to be 5 device pixels may come back 4.999.
 var ROUNDING = 0.01;
@@ -189,6 +195,7 @@ function inkCanvas(ctx: CanvasRenderingContext2D) {
 var lcd = {
   COLS: COLS,
   ROWS: ROWS,
+  PIXEL_ASPECT: PIXEL_ASPECT,
   cols: cols,
   pixelSize: pixelSize,
   gapPositions: gapPositions,
