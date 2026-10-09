@@ -1,13 +1,134 @@
-// The phone's own icons, from apps/phone/src/assets/core/ui. Keep them in sync by copying.
+// The phone's own icons, as pixel art: from apps/phone/src/components/core/graphics/pixelIcons.js.
+// Keep them in sync by copying. "#" is a lit pixel.
 
-export var check =
-  '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_308_89)"><path d="M0 11.4627H2.14925V13.6119H0V11.4627Z" fill="black"/><path d="M1.43284 12.5373H3.58209V14.6866H1.43284V12.5373Z" fill="black"/><path d="M2.50746 14.3284H4.65672V17.194H2.50746V14.3284Z" fill="black"/><path d="M3.58209 15.403H5.73134V20.4179H3.58209V15.403Z" fill="black"/><path d="M4.65672 16.8358H6.08955V22.9254H4.65672V16.8358Z" fill="black"/><path d="M6.08955 16.8358H8.95522V24.3582H6.08955V16.8358Z" fill="black"/><path d="M7.16418 13.6119H10.0299V20.4179H7.16418V13.6119Z" fill="black"/><path d="M8.23881 11.1045H11.4627V16.1194H8.23881V11.1045Z" fill="black"/><path d="M9.31343 9.67164H12.5373V13.2537H9.31343V9.67164Z" fill="black"/><path d="M10.3881 8.23881H13.6119V10.7463H10.3881V8.23881Z" fill="black"/><path d="M11.4627 6.80597H14.3284V9.31343H11.4627V6.80597Z" fill="black"/><path d="M12.8955 5.37313H15.7612V7.8806H12.8955V5.37313Z" fill="black"/><path d="M13.9701 3.9403H16.8358V6.44776H13.9701V3.9403Z" fill="black"/><path d="M15.7612 2.50746H18.2687V5.01493H15.7612V2.50746Z" fill="black"/><path d="M17.9104 1.43284H20.4179V3.9403H17.9104V1.43284Z" fill="black"/><path d="M20.0597 0H21.8507V2.50746H20.0597V0Z" fill="black"/><path d="M21.8507 0H24V1.43284H21.8507V0Z" fill="black"/></g><defs><clipPath id="clip0_308_89"><rect width="24" height="24" fill="white"/></clipPath></defs></svg>';
+export type PixelGrid = string[];
 
-export var stop =
-  '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#prefix__prefix__clip0_308_46)" fill="#000"><path d="M13.609 9.5h.956v4.74h-.956V9.5zm3.826 0h.956v1.87h-.956V9.5z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.783.5v.957h.956v.956h.957v.957h.956v.956h.957v.957h.956v.956h.957v.978h.978v9.566h-.978v.978h-.957v.956h-.956v.957h-.957v.956h-.956v.957h-.957v.957h-.956v.956H7.217v-.956h-.956v-.957h-.957v-.957h-.956v-.956H3.39v-.957h-.956v-.956h-.957v-.978H.5V7.217h.978V6.24h.957v-.956h.956v-.957h.957V3.37h.956v-.957h.957v-.956h.956V.5h9.566zm0 1H7.217v.913h9.566V1.5zM1.5 7.24v9.52h.913V7.24H1.5zm.935-.023h.848l.108-.108v-.826h-.956v.934zm0 9.566h.848l.108.108v.826h-.956v-.934zm.956.978h.87l.087.087v.826H3.39v-.913zm.957.956h.87l.086.087v.826h-.956v-.913zm.956.957h.87l.087.087v.826h-.957v-.913zm.957.956h.87l.086.087v.827h-.956v-.914zm10.522.914v-.827l.087-.087h.87v.914h-.957zm.956-.957v-.826l.087-.087h.87v.913h-.957zm.957-.957v-.826l.087-.087h.87v.913h-.957zm.956-.956v-.826l.087-.087h.87v.913h-.957zm.957-.957v-.826l.108-.108h.848v.934h-.956zm.956-10.5h-.848l-.108-.108v-.826h.956v.934zm-.956-.978h-.87l-.087-.087v-.826h.957v.913zm-.957-.956h-.87l-.086-.087V4.37h.956v.913zm-.956-.957h-.87l-.087-.087v-.826h.957v.913zm-.957-.956h-.87l-.086-.087v-.826h.956v.913zM7.217 2.457v.826l-.087.087h-.87v-.913h.957zm-.956.956v.826l-.087.087h-.87v-.913h.957zm-.957.957v.826l-.087.087h-.87V4.37h.957zm-.956.956v.826l-.087.087h-.87v-.913h.957zM21.587 7.24v9.522h.913V7.239h-.913zm-4.804 14.348H7.217v.913h9.566v-.913zM5.957 9.5h3.826v5.74h.956V9.5h1.913v4.783h.957v.956h.956v-.956h.957V9.457h-.957V8.5h-.956v.957h-.957V8.5H5.957v.957H5v1.956h.957v.957h.956v1.87H5v1h1.913v-.957h.957v-1.957h-.957v-.956h-.956V9.5zm10.521 5.74h.957v-2.87h.956v-.957h.957V9.457h-.957V8.5h-1.913v6.74z"/></g><defs><clipPath id="prefix__prefix__clip0_308_46"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs></svg>';
+export var check: PixelGrid = [
+  "..............##",
+  "............###.",
+  "...........##...",
+  "..........##....",
+  ".........##.....",
+  "........##......",
+  ".......###......",
+  "......###.......",
+  "##....###.......",
+  ".##..###........",
+  "..##.###........",
+  "..#####.........",
+  "...####.........",
+  "...####.........",
+  "...###..........",
+  "....##..........",
+];
 
-export var info =
-  '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 0.5H13.5M8.5 1.5L9.5 1.5M14.5 1.5H15.5M10.5 7.5H13.5M8.5 6.5H9.5M14.5 6.5H15.5M7.5 2.5V5.5M16.5 2.5V5.5M5.5 10.5H16.5V19.5H19.5L19.5 23.5H4.5V19.5H7.5V14.5H5.5V10.5Z" stroke="black" stroke-linecap="square"/></svg>';
+export var info: PixelGrid = [
+  "......####......",
+  "....##....##....",
+  "...#........#...",
+  "...#........#...",
+  "...#........#...",
+  "...#........#...",
+  "....##....##....",
+  "......####......",
+  ".############...",
+  ".#..........#...",
+  ".#..........#...",
+  ".#..........#...",
+  ".###........#...",
+  "...#........#...",
+  "...#........#...",
+  "...#........#...",
+  "...#........#...",
+  "####........####",
+  "#..............#",
+  "#..............#",
+  "#..............#",
+  "################",
+];
 
-export var progress =
-  '<svg width="56" height="10" viewBox="0 0 56 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5V9.5H55.5V0.5H0.5Z" stroke="black" /><g clip-path="url(#c)"><path d="M3 2.5H10M2 3.5H9M1 4.5H8M0 5.5H7M11 2.5H18M10 3.5H17M9 4.5H16M8 5.5H15M7 6.5H14M6 7.5H13M19 2.5H26M18 3.5H25M17 4.5H24M16 5.5H23M15 6.5H22M14 7.5H21M27 2.5H34M26 3.5H33M25 4.5H32M24 5.5H31M23 6.5H30M22 7.5H29M35 2.5H42M34 3.5H41M33 4.5H40M32 5.5H39M31 6.5H38M30 7.5H37M43 2.5H50M42 3.5H49M41 4.5H48M40 5.5H47M39 6.5H46M38 7.5H45M51 2.5H58M50 3.5H57M49 4.5H56M48 5.5H55M47 6.5H54M46 7.5H53M-1 6.5H6M-2 7.5H5M-5 2.50001H2M-6 3.50001H1M-7 4.50001H0M-8 5.50001H-1M-9 6.50001H-2M-10 7.50001H-3" stroke="black"><animateTransform attributeName="transform" type="translate" values="0 0; 2 0; 4 0; 6 0" calcMode="discrete" dur="1s" repeatCount="indefinite" /></path></g><defs><clipPath id="c"><rect width="52" height="6" transform="translate(2 2)" /></clipPath></defs></svg>';
+export var stop: PixelGrid = [
+  ".......#########.......",
+  "......#.........#......",
+  ".....#.#########.#.....",
+  "....#.###########.#....",
+  "...#.#############.#...",
+  "..#.###############.#..",
+  ".#.#################.#.",
+  "#.###################.#",
+  "#.###.......#.##..###.#",
+  "#.##.####.##.#.#.#.##.#",
+  "#.##.####.##.#.#.#.##.#",
+  "#.###.###.##.#.#..###.#",
+  "#.####.##.##.#.#.####.#",
+  "#.####.##.##.#.#.####.#",
+  "#.##..###.###.##.####.#",
+  "#.###################.#",
+  ".#.#################.#.",
+  "..#.###############.#..",
+  "...#.#############.#...",
+  "....#.###########.#....",
+  ".....#.#########.#.....",
+  "......#.........#......",
+  ".......#########.......",
+];
+
+/** Rows of the progress bar's frame and stripes, and the columns one stripe repeats over */
+var PROGRESS_ROWS = 10;
+var STRIPE_PERIOD = 8;
+/** Columns the stripes move per frame; four frames make one period */
+var STRIPE_STEP = 2;
+
+/**
+ * The animated progress bar at any width: a frame with diagonal stripes inside that move one step
+ * per frame, so a screen can fill whatever width it has.
+ *
+ * @param cols The bar's width in pixels, frame included
+ */
+export function progressBar(cols: number): PixelGrid[] {
+  var frames: PixelGrid[] = [];
+  for (var frame = 0; frame < STRIPE_PERIOD / STRIPE_STEP; frame++) {
+    var rows: string[] = [];
+    for (var row = 0; row < PROGRESS_ROWS; row++) {
+      var line = "";
+      for (var col = 0; col < cols; col++) {
+        var edge = row === 0 || row === PROGRESS_ROWS - 1 || col === 0 || col === cols - 1;
+        var inside = row >= 2 && row <= PROGRESS_ROWS - 3 && col >= 2 && col <= cols - 3;
+        var gap = (col - STRIPE_STEP * frame + row) % STRIPE_PERIOD === STRIPE_PERIOD / 2;
+        line += edge || (inside && !gap) ? "#" : ".";
+      }
+      rows.push(line);
+    }
+    frames.push(rows);
+  }
+  return frames;
+}
+
+/** One SVG path for a grid: a rectangle per run of lit pixels in a row, in pixel units. */
+export function toPath(rows: PixelGrid): string {
+  var d = "";
+  rows.forEach(function (row, y) {
+    var re = /#+/g;
+    var run: RegExpExecArray | null;
+    while ((run = re.exec(row)))
+      d += "M" + run.index + " " + y + "h" + run[0].length + "v1h-" + run[0].length + "z";
+  });
+  return d;
+}
+
+/**
+ * An SVG of the art, stretched to fill whatever box it is given, so that sized in LCD pixels, one
+ * pixel of art is one LCD pixel, 6 wide to 7 tall.
+ */
+export function svg(rows: PixelGrid): string {
+  var cols = rows[0] ? rows[0].length : 0;
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' +
+    cols +
+    " " +
+    rows.length +
+    '" preserveAspectRatio="none" shape-rendering="crispEdges"><path d="' +
+    toPath(rows) +
+    '"/></svg>'
+  );
+}

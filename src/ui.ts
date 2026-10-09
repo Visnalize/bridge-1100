@@ -75,6 +75,12 @@ interface Entry {
 
 var LINES = 3;
 var OPEN_CLASS = "b-ui-open";
+/** The shortest the scroll bar's thumb gets, in pixels, as on the phone */
+var MIN_THUMB = 8;
+/** In pixels: the narrowest loading bar drawn */
+var MIN_BAR = 16;
+/** How long an animated icon shows each frame, in milliseconds */
+var FRAME_MS = 250;
 
 var stack: Entry[] = [];
 var root: HTMLElement | null = null;
@@ -86,11 +92,26 @@ function h(tag: string, className?: string, text?: string) {
   return el;
 }
 
-function icon(svg: string) {
+/** An LCD pixel's height and width, in CSS pixels, from ui.css; 1 where they cannot be read */
+function lcdPixel() {
+  var style = root ? getComputedStyle(root) : null;
+  var row = style ? parseFloat(style.getPropertyValue("--b-px")) : 0;
+  var column = style ? parseFloat(style.getPropertyValue("--b-px-x")) : 0;
+  return { row: row || 1, column: column || 1 };
+}
+
+/** An image of pixel art, one pixel of art to an LCD pixel */
+function icon(rows: icons.PixelGrid) {
   var img = document.createElement("img");
-  img.src = "data:image/svg+xml," + encodeURIComponent(svg);
   img.alt = "";
+  draw(img, rows);
   return img;
+}
+
+function draw(img: HTMLImageElement, rows: icons.PixelGrid) {
+  img.src = "data:image/svg+xml," + encodeURIComponent(icons.svg(rows));
+  img.style.width = "calc(var(--b-px-x) * " + (rows[0] ? rows[0].length : 0) + ")";
+  img.style.height = "calc(var(--b-px) * " + rows.length + ")";
 }
 
 function header(title: string) {
@@ -192,25 +213,49 @@ function list(options: ListOptions): Screen {
     ul.appendChild(li);
     rows.push(li);
   });
-  thumb.style.height = 100 / items.length + "%";
   bar.appendChild(thumb);
   box.appendChild(ul);
   box.appendChild(bar);
   el.appendChild(box);
   el.appendChild(footer(options.action === undefined ? "Select" : options.action));
 
+  // The list is kept to a multiple of three pixels, so each row, a third of it, is whole pixels.
+  function layout() {
+    var px = lcdPixel();
+    ul.style.height = "";
+    var page = LINES * px.row;
+    var height = Math.floor(box.getBoundingClientRect().height / page + 0.01) * page;
+    if (height) ul.style.height = height + "px";
+    render();
+  }
+
   function render() {
+    var px = lcdPixel();
     rows.forEach(function (row, i) {
       var active = i === index;
       var label = row.firstChild as HTMLElement;
       var text = label.firstChild as HTMLElement;
-      // The selected row scrolls whatever does not fit, as the phone's lists do.
+      // The selected row scrolls whatever does not fit, as the phone's lists do, a pixel column a
+      // step, so every step lands on the grid.
       var overflow = active ? text.scrollWidth - label.clientWidth : 0;
+      var steps = overflow > 0 ? Math.ceil(overflow / px.column - 0.01) : 0;
       row.className = active ? "b-active" : "";
-      label.className = overflow > 0 ? "b-label b-marquee" : "b-label";
-      text.style.setProperty("--b-marquee-distance", overflow > 0 ? overflow + "px" : "");
+      label.className = steps ? "b-label b-marquee" : "b-label";
+      text.style.setProperty("--b-marquee-distance", steps ? steps * px.column + "px" : "");
+      text.style.animationTimingFunction = steps ? "steps(" + steps + ", end)" : "";
     });
-    thumb.style.top = (index * 100) / items.length + "%";
+    // The thumb in whole pixels: a share of the bar per item, from the top for the first to the
+    // bottom for the last
+    var barRows = Math.floor(bar.getBoundingClientRect().height / px.row + 0.01);
+    if (barRows) {
+      var thumbRows = Math.min(barRows, Math.max(MIN_THUMB, Math.floor(barRows / items.length)));
+      var step = items.length > 1 ? (barRows - thumbRows) / (items.length - 1) : 0;
+      thumb.style.height = thumbRows * px.row + "px";
+      thumb.style.top = Math.round(index * step) * px.row + "px";
+    } else {
+      thumb.style.height = 100 / items.length + "%";
+      thumb.style.top = (index * 100) / items.length + "%";
+    }
     // Rows scroll a page of three at a time, as the phone's lists do.
     var first = rows[index - (index % LINES)];
     if (first) ul.scrollTop = first.offsetTop;
@@ -221,7 +266,7 @@ function list(options: ListOptions): Screen {
 
   var screen = push({
     el: el,
-    onShow: render,
+    onShow: layout,
     onKey: function (key) {
       var last = index;
       if (key === "up") index = moveUp(index, items.length);
@@ -247,18 +292,20 @@ function text(options: TextOptions): Screen {
   el.appendChild(box);
   el.appendChild(footer(options.action === undefined ? "OK" : options.action));
 
-  // A page is a whole number of pixel lines: a fractional line height is rounded differently by
-  // each browser, and the error adds up page after page until lines are cut in half.
+  // A line is a whole number of LCD pixels, which keeps every line on the grid. A page is then a
+  // whole number of lines: a fractional line height is rounded differently by each browser, and
+  // the error adds up page after page until lines are cut in half.
   function layout() {
+    var row = lcdPixel().row;
     box.style.maxHeight = "";
     span.style.lineHeight = "";
     span.style.height = "";
-    var lineHeight = Math.floor(box.getBoundingClientRect().height / LINES);
+    var lineHeight = Math.floor(box.getBoundingClientRect().height / LINES / row + 0.01) * row;
     if (!lineHeight) return;
     var pageHeight = lineHeight * LINES;
     box.style.maxHeight = pageHeight + "px";
     span.style.lineHeight = lineHeight + "px";
-    pages = Math.max(1, Math.ceil(span.offsetHeight / pageHeight));
+    pages = Math.max(1, Math.ceil(span.getBoundingClientRect().height / pageHeight - 0.01));
     span.style.height = pageHeight * pages + "px";
     page = Math.min(page, pages - 1);
     box.scrollTop = page * pageHeight;
@@ -308,9 +355,9 @@ function result(options: ResultOptions): Screen {
   el.appendChild(h("span", "b-message", options.message));
   el.appendChild(iconBox);
 
-  var svg = type === "done" ? icons.check : type === "fail" ? icons.stop : type === "info" ? icons.info : "";
-  if (svg) {
-    var img = icon(svg);
+  var art = type === "done" ? icons.check : type === "fail" ? icons.stop : type === "info" ? icons.info : null;
+  if (art) {
+    var img = icon(art);
     // The tick is drawn into its box a moment later, as on the phone.
     if (type === "done") {
       img.style.visibility = "hidden";
@@ -384,10 +431,30 @@ function number(options: NumberOptions): Screen {
 function loading(options?: LoadingOptions): Screen {
   var el = screenEl("loading-screen");
   var bar = h("div", "b-progress");
-  bar.appendChild(icon(icons.progress));
+  var frames = icons.progressBar(56);
+  var frame = 0;
+  var img = icon(frames[0]);
+  bar.appendChild(img);
   el.appendChild(bar);
   el.appendChild(h("div", "b-loading-text", (options && options.message) || "Loading"));
-  return push({ el: el, onKey: function () {} });
+  var timer = window.setInterval(function () {
+    frame = (frame + 1) % frames.length;
+    draw(img, frames[frame]);
+  }, FRAME_MS);
+  return push({
+    el: el,
+    // The bar fills the whole pixel columns it has
+    onShow: function () {
+      var cols = Math.floor(bar.getBoundingClientRect().width / lcdPixel().column + 0.01);
+      if (!cols) return;
+      frames = icons.progressBar(Math.max(MIN_BAR, cols));
+      draw(img, frames[frame % frames.length]);
+    },
+    onKey: function () {},
+    onClose: function () {
+      clearInterval(timer);
+    },
+  });
 }
 
 function closeAll() {

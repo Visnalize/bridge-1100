@@ -86,6 +86,8 @@ describe("ui", () => {
         var long = label("A row much longer than the screen");
         expect(long.classList.contains("b-marquee")).toBe(true);
         expect((long.firstChild as HTMLElement).style.getPropertyValue("--b-marquee-distance")).toBe("200px");
+        // One step per pixel column, which is a CSS pixel where ui.css is not loaded
+        expect((long.firstChild as HTMLElement).style.animationTimingFunction).toBe("steps(200, end)");
       });
 
       it("stops scrolling once another row is selected", () => {
@@ -95,6 +97,37 @@ describe("ui", () => {
 
         expect(label("A row much longer than the screen").classList.contains("b-marquee")).toBe(false);
         expect(label("Short").classList.contains("b-marquee")).toBe(false);
+      });
+    });
+
+    describe("the scroll bar's thumb", () => {
+      // happy-dom does no layout, and without ui.css a pixel is a CSS pixel: a bar 45 pixels tall
+      beforeEach(() => {
+        vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+          var height = this.classList.contains("b-scrollbar") ? 45 : 0;
+          return { height: height, width: 0, top: 0, left: 0, right: 0, bottom: height, x: 0, y: 0, toJSON() {} };
+        });
+      });
+
+      afterEach(() => {
+        vi.restoreAllMocks();
+      });
+
+      var thumb = () => document.querySelector<HTMLElement>(".b-thumb")!;
+
+      it("is whole pixels, and never shorter than an oval of 8", () => {
+        ui.list({ items: ["1", "2", "3", "4", "5", "6"], index: 2 });
+
+        expect(thumb().style.height).toBe("8px");
+        // The 37 pixels it moves through, a fifth for each item past the first: 14.8, to the nearest pixel
+        expect(thumb().style.top).toBe("15px");
+      });
+
+      it("reaches the bottom of the bar on the last item", () => {
+        ui.list({ items: ["1", "2", "3"], index: 2 });
+
+        expect(thumb().style.height).toBe("15px");
+        expect(thumb().style.top).toBe("30px");
       });
     });
 

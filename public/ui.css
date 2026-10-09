@@ -1,11 +1,16 @@
 /*
- * Styles for bridge.ui screens. Sizes copy the phone's own screens, which are set in rem: --r is
- * one of the phone's rem, as a share of the screen an app gets. Colors fall back to the phone's
- * so that the screens can be checked in a plain browser tab, where no _init arrives.
+ * Styles for bridge.ui screens, which copy the phone's own. Everything is in the phone's LCD pixels:
+ * the screen is 65 of them tall, and a pixel is 6 wide to 7 tall, so --b-px is a pixel's height and
+ * --b-px-x its width. Colors fall back to the phone's so that the screens can be checked in a plain
+ * browser tab, where no _init arrives.
+ *
+ * This file is not run through autoprefixer and must work in an Android 7.0 WebView: no flex gap,
+ * no inset or logical properties, no min(), max(), clamp() or round().
  */
 
 .b-ui {
-  --r: 16.72vh;
+  --b-px: calc(100vh / 65);
+  --b-px-x: calc(100vh / 65 * 6 / 7);
   --b-ink: rgba(0, 0, 0, 0.8);
   --b-fg: var(--foreground, #a3b65c);
   --b-bg: var(--background, #000000e6);
@@ -16,8 +21,8 @@
   bottom: 0;
   left: 0;
   margin: 0 auto;
-  width: calc(100vh * var(--vw-ratio, 1.374));
-  font-size: var(--r);
+  width: calc(var(--b-px-x) * 96);
+  font-size: calc(var(--b-px) * 11);
   line-height: normal;
 }
 
@@ -53,26 +58,28 @@
 }
 
 .b-ui footer {
+  flex-shrink: 0;
   margin: 0;
-  line-height: normal;
-  font-size: calc(var(--r) * 0.85);
+  font-size: calc(var(--b-px) * 9);
+  line-height: 1;
   text-align: center;
 }
 
 /* Header: the title between two lines */
 
 .b-header {
+  flex-shrink: 0;
   display: flex;
-  gap: calc(var(--r) * 0.1);
-  margin-bottom: calc(var(--r) * 0.1);
-  font-size: calc(var(--r) * 0.65);
+  margin-bottom: var(--b-px);
+  font-size: calc(var(--b-px) * 8);
+  line-height: 1;
 }
 
 .b-header > span {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: calc(var(--r) * 0.2);
+  justify-content: center;
   white-space: nowrap;
 }
 
@@ -81,11 +88,21 @@
   content: "";
   display: block;
   width: 100%;
-  height: calc(var(--r) * 0.05);
+  height: var(--b-px);
   background: currentcolor;
 }
 
-/* List */
+.b-header > span::before {
+  padding-left: calc(var(--b-px-x) * 4);
+  margin-right: calc(var(--b-px-x) * 2);
+}
+
+.b-header > span::after {
+  margin-right: calc(var(--b-px-x) * 4);
+  margin-left: calc(var(--b-px-x) * 2);
+}
+
+/* List: three rows a page, each a third of a list kept to a multiple of three pixels by ui.ts */
 
 .b-list {
   /* Overflowing text scrolls towards the end edge, so right-to-left steps the other way */
@@ -93,8 +110,8 @@
   flex: 1;
   min-height: 0;
   position: relative;
-  padding-inline-end: calc(var(--r) * 0.4);
-  margin-bottom: calc(var(--r) * 0.1);
+  padding-right: calc(var(--b-px-x) * 4);
+  margin-bottom: var(--b-px);
 }
 
 .b-list > ul {
@@ -103,7 +120,7 @@
 }
 
 .b-list li {
-  height: 33.33%;
+  height: calc(100% / 3);
   display: flex;
   align-items: center;
 }
@@ -114,21 +131,22 @@
   height: 100%;
   display: flex;
   align-items: center;
-  padding-inline-start: calc(var(--r) * 0.05);
+  padding-left: var(--b-px-x);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* The font sits slightly high in its box, the same correction as the phone's */
+/* The font sits high in its box, the same correction as the phone's */
 .b-label > span {
-  margin-top: calc(var(--r) * 0.2);
+  margin-top: calc(var(--b-px) * 2);
 }
 
 .b-label.b-marquee {
   text-overflow: clip;
 }
 
+/* ui.ts sets the timing: one step per pixel column of the distance */
 .b-label.b-marquee > span {
   animation: b-marquee 5s infinite;
 }
@@ -140,6 +158,13 @@
 
 [dir="rtl"] .b-list {
   --b-marquee-sign: 1;
+  padding-right: 0;
+  padding-left: calc(var(--b-px-x) * 4);
+}
+
+[dir="rtl"] .b-label {
+  padding-left: 0;
+  padding-right: var(--b-px-x);
 }
 
 /*
@@ -153,7 +178,6 @@
 
   10% {
     transform: translateX(0);
-    animation-timing-function: steps(20, jump-end);
   }
 
   65% {
@@ -162,7 +186,7 @@
 
   75% {
     transform: translateX(calc(var(--b-marquee-sign, -1) * var(--b-marquee-distance, 0px)));
-    animation-timing-function: steps(1, jump-end);
+    animation-timing-function: steps(1, end);
   }
 
   76%,
@@ -171,33 +195,46 @@
   }
 }
 
+/* A line one pixel wide, a pixel in from the edge, and a thumb a pixel wider on each side */
 .b-scrollbar {
   position: absolute;
   top: 0;
-  inset-inline-end: 0;
-  width: calc(var(--r) * 0.08);
+  right: var(--b-px-x);
+  width: var(--b-px-x);
   height: 100%;
-  margin-inline-end: calc(var(--r) * 0.1);
   background: currentcolor;
 }
 
+[dir="rtl"] .b-scrollbar {
+  right: auto;
+  left: var(--b-px-x);
+}
+
+/*
+ * An oval, as on the phone: the middle pixel of its top and bottom rows, its sides between them,
+ * and the screen's colour inside, which hides the line. ui.ts sizes it in whole pixels.
+ */
 .b-thumb {
   position: absolute;
   top: 0;
-  left: 50%;
-  width: calc(var(--r) * 0.2);
-  transform: translateX(-50%);
-  border: calc(var(--r) * 0.075) solid;
-  border-radius: 3px;
-  box-sizing: border-box;
-  background: var(--b-fg);
+  left: calc(var(--b-px-x) * -1);
+  width: calc(var(--b-px-x) * 3);
+  background: linear-gradient(currentcolor, currentcolor) 0 var(--b-px) / var(--b-px-x)
+      calc(100% - var(--b-px) * 2) no-repeat,
+    linear-gradient(currentcolor, currentcolor) 100% var(--b-px) / var(--b-px-x)
+      calc(100% - var(--b-px) * 2) no-repeat,
+    linear-gradient(currentcolor, currentcolor) 50% 0 / var(--b-px-x) var(--b-px) no-repeat,
+    linear-gradient(currentcolor, currentcolor) 50% 100% / var(--b-px-x) var(--b-px) no-repeat,
+    linear-gradient(var(--b-fg), var(--b-fg)) 50% var(--b-px) / var(--b-px-x)
+      calc(100% - var(--b-px) * 2) no-repeat;
 }
 
 /* Text, paged three lines at a time */
 
 .b-text {
   flex: 1;
-  margin-bottom: calc(var(--r) * 0.25);
+  min-height: 0;
+  margin-bottom: calc(var(--b-px) * 2);
   overflow: hidden;
   position: relative;
 }
@@ -211,12 +248,11 @@
 
 .b-prompt {
   flex: 1;
-  font-size: calc(var(--r) * 1.25);
 }
 
 .b-hint {
   margin-top: auto;
-  font-size: calc(var(--r) * 0.85);
+  font-size: calc(var(--b-px) * 9);
   text-align: end;
 }
 
@@ -225,73 +261,117 @@
 .b-result-screen {
   flex-direction: row;
   align-items: flex-start;
-  padding-top: calc(var(--r) * 0.25);
+  padding-top: calc(var(--b-px) * 3);
   font-family: BrickLarge, sans-serif;
-  line-height: 1.25;
+  line-height: calc(var(--b-px) * 16);
 }
 
 .b-message {
   max-width: 70%;
-  margin-inline-end: var(--r);
-  font-size: calc(var(--r) * 1.125);
+  margin-right: calc(var(--b-px-x) * 13);
+  font-size: calc(var(--b-px) * 13);
   white-space: pre-line;
+}
+
+[dir="rtl"] .b-message {
+  margin-right: 0;
+  margin-left: calc(var(--b-px-x) * 13);
+}
+
+/* The icons are drawn at different sizes, so each sits in the same box and the message keeps its width */
+.b-fail .b-icon,
+.b-info .b-icon {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  width: calc(var(--b-px-x) * 24);
+  height: calc(var(--b-px) * 24);
 }
 
 .b-icon img {
   display: block;
-  width: calc(var(--r) * 2);
-  height: calc(var(--r) * 2);
 }
 
+/* A box of single-pixel dots, drawn as gradients: a dotted border has round dots */
 .b-done .b-icon {
+  --b-dots-x: repeating-linear-gradient(
+    to right,
+    var(--b-ink) 0,
+    var(--b-ink) var(--b-px-x),
+    transparent var(--b-px-x),
+    transparent calc(var(--b-px-x) * 2)
+  );
+  --b-dots-y: repeating-linear-gradient(
+    var(--b-ink) 0,
+    var(--b-ink) var(--b-px),
+    transparent var(--b-px),
+    transparent calc(var(--b-px) * 2)
+  );
   display: inline-block;
   flex-shrink: 0;
-  width: calc(var(--r) * 0.75);
-  height: calc(var(--r) * 0.75);
-  margin-top: calc(var(--r) * 1.125);
-  margin-inline-end: calc(var(--r) * 0.625);
-  border: calc(var(--r) * 0.075) dotted var(--b-ink);
+  width: calc(var(--b-px-x) * 11);
+  height: calc(var(--b-px) * 9);
+  margin-top: calc(var(--b-px) * 12);
+  margin-right: calc(var(--b-px-x) * 8);
+  background: var(--b-dots-x) 0 0 / 100% var(--b-px) no-repeat,
+    var(--b-dots-x) 0 100% / 100% var(--b-px) no-repeat,
+    var(--b-dots-y) 0 0 / var(--b-px-x) 100% no-repeat,
+    var(--b-dots-y) 100% 0 / var(--b-px-x) 100% no-repeat;
 }
 
 .b-done .b-icon img {
-  width: calc(var(--r) * 1.5);
-  height: calc(var(--r) * 1.5);
-  margin-top: calc(var(--r) * -0.875);
-  margin-inline-start: calc(var(--r) * -0.125);
+  margin-top: calc(var(--b-px) * -10);
+  margin-left: calc(var(--b-px-x) * -2);
+}
+
+[dir="rtl"] .b-done .b-icon {
+  margin-right: 0;
+  margin-left: calc(var(--b-px-x) * 8);
 }
 
 /* Number input */
 
 .b-editing {
-  height: calc(var(--r) * 0.8);
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  font-size: calc(var(--r) * 0.625);
+  font-size: calc(var(--b-px) * 8);
+  line-height: 1;
 }
 
 .b-input-label {
   margin: 0;
   font-weight: normal;
   white-space: nowrap;
-  font-size: calc(var(--r) * 0.85);
+  font-size: calc(var(--b-px) * 9);
 }
 
+/* A one-pixel outline inside the box, as four shadows: a browser rounds a border down to whole device pixels */
 .b-field {
   flex: 1;
-  margin-bottom: calc(var(--r) * 0.25);
-  padding: 2px;
-  border: calc(var(--r) * 0.1) solid #000;
+  margin-bottom: calc(var(--b-px) * 2);
+  padding: var(--b-px) var(--b-px-x);
+  box-shadow: inset var(--b-px-x) 0 0 0 #000, inset calc(var(--b-px-x) * -1) 0 0 0 #000,
+    inset 0 var(--b-px) 0 0 #000, inset 0 calc(var(--b-px) * -1) 0 0 #000;
   overflow-wrap: break-word;
 }
 
+/* One pixel wide, on for half a second and off for half, fading a little as an LCD's crystals turn */
 .b-cursor {
-  border-inline-start: 1px solid #000;
-  animation: b-blink 1s cubic-bezier(0.2, 1, 0.2, 1) infinite;
+  border-left: var(--b-px-x) solid #000;
+  animation: b-blink 1s linear infinite;
 }
 
 @keyframes b-blink {
-  50% {
-    border-inline-start-color: transparent;
+  0%,
+  50%,
+  100% {
+    border-left-color: #000;
+  }
+
+  62%,
+  92% {
+    border-left-color: transparent;
   }
 }
 
@@ -299,16 +379,13 @@
 
 .b-loading-screen {
   justify-content: flex-start;
-  padding: 5%;
-  padding-inline-start: 0;
+  padding: calc(var(--b-px) * 5) calc(var(--b-px-x) * 5) calc(var(--b-px) * 5) 0;
 }
 
 .b-progress {
-  height: 27%;
-  margin-bottom: 5%;
-}
-
-.b-progress img {
-  display: block;
-  height: 100%;
+  flex-shrink: 0;
+  height: calc(var(--b-px) * 12);
+  margin-bottom: calc(var(--b-px) * 5);
+  display: flex;
+  align-items: center;
 }
